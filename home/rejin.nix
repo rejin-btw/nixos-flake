@@ -1,7 +1,7 @@
 { config, pkgs, lib, ... }:
 
 let
-  scriptsDir = ./dotfiles/scripts;
+  scriptsDir = ../dotfiles/scripts;
 in
 {
   home.username = "rejin";
@@ -110,10 +110,10 @@ in
 
   # Dotfiles management: all paths are flake-relative!
   home.file = {
-    ".config/niri".source = ./dotfiles/.config/niri/nix;
-    ".config/mako".source = ./dotfiles/.config/mako;
-    ".config/fuzzel".source = ./dotfiles/.config/fuzzel;
-    "scripts".source = ./dotfiles/scripts;
+    ".config/niri".source = ../dotfiles/.config/niri/nix;
+    ".config/mako".source = ../dotfiles/.config/mako;
+    ".config/fuzzel".source = ../dotfiles/.config/fuzzel;
+    "scripts".source = ../dotfiles/scripts;
   };
 
   # Environment variables
