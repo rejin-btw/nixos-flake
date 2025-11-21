@@ -95,15 +95,16 @@ in
 
   # Git configuration
   programs.git = {
-    enable = true;
-    package = pkgs.gitFull;
-    userName = "rejin-btw";
-    userEmail = "rejinks@zohomail.in";
-    extraConfig = {
-      credential.helper = "libsecret";
-      core.editor = "vim";
-    };
-  };
+  enable = true;
+  package = pkgs.gitFull;
+  settings = {
+    user.name = "rejin-btw";
+    user.email = "rejinks@zohomail.in";
+    credential.helper = "libsecret";
+    core.editor = "vim";
+   };
+ };
+
 
   programs.firefox.enable = true;
 

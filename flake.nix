@@ -3,7 +3,7 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.05";
-    home-manager.url = "github:nix-community/home-manager";
+    home-manager.url = "github:nix-community/home-manager/release-25.05";
     #stylix.url = "github:danth/stylix";
   };
 
@@ -14,7 +14,10 @@
         modules = [
           ./hosts/default.nix
           home-manager.nixosModules.home-manager
-          #stylix.nixosModules.stylix
+	   {
+              nix.settings.experimental-features = [ "nix-command" "flakes" ];
+          }
+
         ];
         specialArgs = { pkgs = import nixpkgs { system = "x86_64-linux"; config.allowUnfree = true; }; };
       };
@@ -28,8 +31,7 @@
           #stylix.homeManagerModules.stylix
         ];
         extraSpecialArgs = { pkgs = import nixpkgs { system = "x86_64-linux"; config.allowUnfree = true; }; };
-        username = "rejin";
-        homeDirectory = "/home/rejin";
+
       };
     };
   };

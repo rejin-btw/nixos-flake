@@ -54,6 +54,7 @@ EOF
     ddcutil
     alsa-tools
     polkit_gnome
+    home-manager
   ];
 
   # 7. PROGRAMS
