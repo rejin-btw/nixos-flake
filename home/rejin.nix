@@ -1,9 +1,12 @@
 { config, pkgs, lib, ... }:
 
 let
-  # Wrap the scripts directory as a derivation so Nix includes it in the build
+  # Convert path to absolute string for nix evaluation
+  dotfilesPath = builtins.toString ../dotfiles;
+
+  # Wrap the scripts directory as derivation so nix includes it in build inputs
   scriptsDir = pkgs.runCommand "scripts" {
-    src = ../dotfiles/scripts;
+    src = "${dotfilesPath}/scripts";
   } ''
     mkdir -p $out
     cp -r $src/* $out/
@@ -46,7 +49,7 @@ in
     p7zip
     freetube
 
-    # Custom scripts - now referencing scriptsDir derivation store path
+    # Custom scripts referencing scriptsDir derivation
     (writeShellScriptBin "auto-consume" ''
       export PATH="${lib.makeBinPath [ libnotify jq procps niri coreutils ]}:$PATH"
       ${builtins.readFile "${scriptsDir}/auto_consume.sh"}
@@ -80,22 +83,22 @@ in
     (pkgs.writeScriptBin "niri-mouse-scroll" ''
       #!${pkgs.python3.withPackages (ps: [ ps.evdev ])}/bin/python3
       ${builtins.readFile "${scriptsDir}/niri-mouse-scroll.py"}
-    '')
+    ''')
 
     (writeShellScriptBin "start-niri" ''
       export PATH="${lib.makeBinPath [ niri coreutils ]}:$PATH"
       ${builtins.readFile "${scriptsDir}/start-niri.sh"}
-    '')
+    ''')
 
     (writeShellScriptBin "fuzzel-bookmarks" ''
       export PATH="${lib.makeBinPath [ python3 sqlite ]}:$PATH"
       python3 ${scriptsDir}/firefox_bookmarks_fuzzel.py
-    '')
+    ''')
 
     (writeShellScriptBin "watch-firefox-bookmarks" ''
       export PATH="${lib.makeBinPath [ inotify-tools python3 ]}:$PATH"
       ${builtins.readFile "${scriptsDir}/bookmarks_watcher.sh"}
-    '')
+    '' )
   ];
 
   programs.git = {
@@ -112,10 +115,10 @@ in
   programs.firefox.enable = true;
 
   home.file = {
-    ".config/niri".source = ../dotfiles/.config/niri/nix;
-    ".config/mako".source = ../dotfiles/.config/mako;
-    ".config/fuzzel".source = ../dotfiles/.config/fuzzel;
-    "scripts".source = ../dotfiles/scripts;
+    ".config/niri".source = "${dotfilesPath}/.config/niri/nix";
+    ".config/mako".source = "${dotfilesPath}/.config/mako";
+    ".config/fuzzel".source = "${dotfilesPath}/.config/fuzzel";
+    "scripts".source = "${dotfilesPath}/scripts";
   };
 
   home.sessionVariables = {
