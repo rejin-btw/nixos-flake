@@ -49,34 +49,34 @@ in
     p7zip
     freetube
 
-    # Custom scripts referencing scriptsDir derivation
+    # Custom scripts - all using readFile with dependency wrapping
     (writeShellScriptBin "auto-consume" ''
-      export PATH="${lib.makeBinPath [ libnotify jq procps niri coreutils ]}:$PATH"
+      export PATH="${lib.makeBinPath [ libnotify jq procps niri coreutils ]}:$$PATH"
       ${builtins.readFile "${scriptsDir}/auto_consume.sh"}
     '')
 
     (writeShellScriptBin "datetime-notify" ''
-      export PATH="${lib.makeBinPath [ libnotify coreutils ]}:$PATH"
+      export PATH="${lib.makeBinPath [ libnotify coreutils ]}:$$PATH"
       ${builtins.readFile "${scriptsDir}/datetime_notify.sh"}
     '')
 
     (writeShellScriptBin "nvim-thunar" ''
-      export PATH="${lib.makeBinPath [ neovim coreutils ]}:$PATH"
+      export PATH="${lib.makeBinPath [ neovim coreutils ]}:$$PATH"
       ${builtins.readFile "${scriptsDir}/nvim_thunar.sh"}
     '')
 
     (writeShellScriptBin "ram-monitor" ''
-      export PATH="${lib.makeBinPath [ libnotify procps gawk coreutils ]}:$PATH"
+      export PATH="${lib.makeBinPath [ libnotify procps gawk coreutils ]}:$$PATH"
       ${builtins.readFile "${scriptsDir}/ram_monitor.sh"}
     '')
 
     (writeShellScriptBin "toggle-audio" ''
-      export PATH="${lib.makeBinPath [ pulseaudio coreutils ]}:$PATH"
+      export PATH="${lib.makeBinPath [ pulseaudio coreutils ]}:$$PATH"
       ${builtins.readFile "${scriptsDir}/toggle-audio.sh"}
     '')
 
     (writeShellScriptBin "vcp-control" ''
-      export PATH="${lib.makeBinPath [ coreutils ]}:$PATH"
+      export PATH="${lib.makeBinPath [ coreutils ]}:$$PATH"
       ${builtins.readFile "${scriptsDir}/vcp_full_control.sh"}
     '')
 
@@ -86,19 +86,19 @@ in
     ''')
 
     (writeShellScriptBin "start-niri" ''
-      export PATH="${lib.makeBinPath [ niri coreutils ]}:$PATH"
+      export PATH="${lib.makeBinPath [ niri coreutils ]}:$$PATH"
       ${builtins.readFile "${scriptsDir}/start-niri.sh"}
     ''')
 
     (writeShellScriptBin "fuzzel-bookmarks" ''
-      export PATH="${lib.makeBinPath [ python3 sqlite ]}:$PATH"
+      export PATH="${lib.makeBinPath [ python3 sqlite ]}:$$PATH"
       python3 ${scriptsDir}/firefox_bookmarks_fuzzel.py
     ''')
 
     (writeShellScriptBin "watch-firefox-bookmarks" ''
-      export PATH="${lib.makeBinPath [ inotify-tools python3 ]}:$PATH"
+      export PATH="${lib.makeBinPath [ inotify-tools python3 ]}:$$PATH"
       ${builtins.readFile "${scriptsDir}/bookmarks_watcher.sh"}
-    '' )
+    '')
   ];
 
   programs.git = {
