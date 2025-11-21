@@ -4,34 +4,43 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.05";
     home-manager.url = "github:nix-community/home-manager/release-25.05";
-    #stylix.url = "github:danth/stylix";
   };
 
-  outputs = { self, nixpkgs, home-manager, ... }: {
+  outputs = { self, nixpkgs, home-manager, ... }:
+  let
+    system = "x86_64-linux";
+    pkgs = import nixpkgs {
+      inherit system;
+      config = { allowUnfree = true; };
+    };
+    dotfilesPath = self.path + "/dotfiles";  # Correct absolute path for dotfiles inside flake root
+  in {
     nixosConfigurations = {
       rejin-nixos = nixpkgs.lib.nixosSystem {
-        system = "x86_64-linux";
+        inherit system;
         modules = [
           ./hosts/default.nix
           home-manager.nixosModules.home-manager
-	   {
-              nix.settings.experimental-features = [ "nix-command" "flakes" ];
+          {
+            nix.settings.experimental-features = [ "nix-command" "flakes" ];
           }
-
         ];
-        specialArgs = { pkgs = import nixpkgs { system = "x86_64-linux"; config.allowUnfree = true; }; };
+        specialArgs = { pkgs = pkgs; };
       };
     };
 
     homeConfigurations = {
       rejin = home-manager.lib.homeManagerConfiguration {
-        pkgs = import nixpkgs { system = "x86_64-linux"; config.allowUnfree = true; };
+        inherit pkgs;
         modules = [
-          ./home/rejin.nix
-          #stylix.homeManagerModules.stylix
+          # Pass dotfilesPath as an extra argument to your home module
+          (import ./home/rejin.nix {
+            inherit pkgs;
+            lib = pkgs.lib;
+            dotfilesPath = dotfilesPath;
+          })
         ];
-        extraSpecialArgs = { pkgs = import nixpkgs { system = "x86_64-linux"; config.allowUnfree = true; }; };
-
+        extraSpecialArgs = { inherit pkgs; };
       };
     };
   };

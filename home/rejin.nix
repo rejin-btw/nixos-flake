@@ -1,10 +1,6 @@
-{ config, pkgs, lib, ... }:
+{ config, pkgs, lib, dotfilesPath, ... }:
 
 let
-  # Convert path to absolute string for nix evaluation
-  dotfilesPath = builtins.toString ../dotfiles;
-
-  # Wrap the scripts directory as derivation so nix includes it in build inputs
   scriptsDir = pkgs.runCommand "scripts" {
     src = "${dotfilesPath}/scripts";
   } ''
@@ -49,55 +45,54 @@ in
     p7zip
     freetube
 
-    # Custom scripts - all using readFile with dependency wrapping
     (writeShellScriptBin "auto-consume" ''
       export PATH="${lib.makeBinPath [ libnotify jq procps niri coreutils ]}:$$PATH"
-      ${builtins.readFile "${scriptsDir}/scripts/auto_consume.sh"}
+      ${builtins.readFile "${scriptsDir}/auto_consume.sh"}
     '')
 
     (writeShellScriptBin "datetime-notify" ''
       export PATH="${lib.makeBinPath [ libnotify coreutils ]}:$$PATH"
-      ${builtins.readFile "${scriptsDir}/scripts/datetime_notify.sh"}
+      ${builtins.readFile "${scriptsDir}/datetime_notify.sh"}
     '')
 
     (writeShellScriptBin "nvim-thunar" ''
       export PATH="${lib.makeBinPath [ neovim coreutils ]}:$$PATH"
-      ${builtins.readFile "${scriptsDir}/scripts/nvim_thunar.sh"}
+      ${builtins.readFile "${scriptsDir}/nvim_thunar.sh"}
     '')
 
     (writeShellScriptBin "ram-monitor" ''
       export PATH="${lib.makeBinPath [ libnotify procps gawk coreutils ]}:$$PATH"
-      ${builtins.readFile "${scriptsDir}/scripts/ram_monitor.sh"}
+      ${builtins.readFile "${scriptsDir}/ram_monitor.sh"}
     '')
 
     (writeShellScriptBin "toggle-audio" ''
       export PATH="${lib.makeBinPath [ pulseaudio coreutils ]}:$$PATH"
-      ${builtins.readFile "${scriptsDir}/scripts/toggle-audio.sh"}
+      ${builtins.readFile "${scriptsDir}/toggle-audio.sh"}
     '')
 
     (writeShellScriptBin "vcp-control" ''
       export PATH="${lib.makeBinPath [ coreutils ]}:$$PATH"
-      ${builtins.readFile "${scriptsDir}/scripts/vcp_full_control.sh"}
+      ${builtins.readFile "${scriptsDir}/vcp_full_control.sh"}
     '')
 
     (pkgs.writeScriptBin "niri-mouse-scroll" ''
       #!${pkgs.python3.withPackages (ps: [ ps.evdev ])}/bin/python3
-      ${builtins.readFile "${scriptsDir}/scripts/niri-mouse-scroll.py"}
+      ${builtins.readFile "${scriptsDir}/niri-mouse-scroll.py"}
     '')
 
     (writeShellScriptBin "start-niri" ''
       export PATH="${lib.makeBinPath [ niri coreutils ]}:$$PATH"
-      ${builtins.readFile "${scriptsDir}/scripts/start-niri.sh"}
+      ${builtins.readFile "${scriptsDir}/start-niri.sh"}
     '')
 
     (writeShellScriptBin "fuzzel-bookmarks" ''
       export PATH="${lib.makeBinPath [ python3 sqlite ]}:$$PATH"
-      python3 ${scriptsDir}/scripts/firefox_bookmarks_fuzzel.py
+      python3 ${scriptsDir}/firefox_bookmarks_fuzzel.py
     '')
 
     (writeShellScriptBin "watch-firefox-bookmarks" ''
       export PATH="${lib.makeBinPath [ inotify-tools python3 ]}:$$PATH"
-      ${builtins.readFile "${scriptsDir}/scripts/bookmarks_watcher.sh"}
+      ${builtins.readFile "${scriptsDir}/bookmarks_watcher.sh"}
     '')
   ];
 
