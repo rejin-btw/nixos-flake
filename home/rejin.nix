@@ -1,14 +1,19 @@
 { config, pkgs, lib, ... }:
 
 let
-  scriptsDir = ../dotfiles/scripts;
+  # Wrap the scripts directory as a derivation so Nix includes it in the build
+  scriptsDir = pkgs.runCommand "scripts" {
+    src = ../dotfiles/scripts;
+  } ''
+    mkdir -p $out
+    cp -r $src/* $out/
+  '';
 in
 {
   home.username = "rejin";
   home.homeDirectory = "/home/rejin";
   home.stateVersion = "25.05";
 
-  # User packages
   home.packages = with pkgs; [
     vim
     wget
@@ -41,7 +46,7 @@ in
     p7zip
     freetube
 
-    # Custom scripts - all using readFile with dependency wrapping
+    # Custom scripts - now referencing scriptsDir derivation store path
     (writeShellScriptBin "auto-consume" ''
       export PATH="${lib.makeBinPath [ libnotify jq procps niri coreutils ]}:$PATH"
       ${builtins.readFile "${scriptsDir}/auto_consume.sh"}
@@ -93,22 +98,19 @@ in
     '')
   ];
 
-  # Git configuration
   programs.git = {
-  enable = true;
-  package = pkgs.gitFull;
-  userName = "rejin-btw";
-  userEmail = "rejinks@zohomail.in";
-  extraConfig = {
-    credential.helper = "libsecret";
-    core.editor = "vim";
-   };
- };
- 
+    enable = true;
+    package = pkgs.gitFull;
+    userName = "rejin-btw";
+    userEmail = "rejinks@zohomail.in";
+    extraConfig = {
+      credential.helper = "libsecret";
+      core.editor = "vim";
+    };
+  };
 
   programs.firefox.enable = true;
 
-  # Dotfiles management: all paths are flake-relative!
   home.file = {
     ".config/niri".source = ../dotfiles/.config/niri/nix;
     ".config/mako".source = ../dotfiles/.config/mako;
@@ -116,7 +118,6 @@ in
     "scripts".source = ../dotfiles/scripts;
   };
 
-  # Environment variables
   home.sessionVariables = {
     EDITOR = "vim";
   };
