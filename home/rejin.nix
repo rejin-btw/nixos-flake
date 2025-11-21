@@ -97,14 +97,14 @@ in
   programs.git = {
   enable = true;
   package = pkgs.gitFull;
-  settings = {
-    user.name = "rejin-btw";
-    user.email = "rejinks@zohomail.in";
+  userName = "rejin-btw";
+  userEmail = "rejinks@zohomail.in";
+  extraConfig = {
     credential.helper = "libsecret";
     core.editor = "vim";
    };
  };
-
+ 
 
   programs.firefox.enable = true;
 
