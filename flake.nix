@@ -1,47 +1,37 @@
 {
-  description = "NixOS + Home Manager + Stylix flake for rejin";
+  description = "NixOS + Home Manager + flake for rejin";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.05";
     home-manager.url = "github:nix-community/home-manager";
-    stylix.url = "github:danth/stylix";
-    flake-utils.url = "github:numtide/flake-utils";
+    #stylix.url = "github:danth/stylix";
   };
 
-  outputs = { self, nixpkgs, home-manager, stylix, flake-utils, ... }:
-    flake-utils.lib.eachDefaultSystem (system:
-      let
-        pkgs = import nixpkgs {
-          system = system;
-          config.allowUnfree = true;
-        };
-      in {
-        # NixOS system configuration (edit "rejin-nixos" as you like)
-        nixosConfigurations = {
-          rejin-nixos = nixpkgs.lib.nixosSystem {
-            system = system;
-            modules = [
-              ./hosts/default.nix
-              home-manager.nixosModules.home-manager
-              stylix.nixosModules.stylix
-            ];
-            specialArgs = { inherit pkgs; };
-          };
-        };
+  outputs = { self, nixpkgs, home-manager, ... }: {
+    nixosConfigurations = {
+      rejin-nixos = nixpkgs.lib.nixosSystem {
+        system = "x86_64-linux";
+        modules = [
+          ./hosts/default.nix
+          home-manager.nixosModules.home-manager
+          #stylix.nixosModules.stylix
+        ];
+        specialArgs = { pkgs = import nixpkgs { system = "x86_64-linux"; config.allowUnfree = true; }; };
+      };
+    };
 
-        # Home Manager standalone configuration (edit username if needed)
-        homeConfigurations = {
-          rejin = home-manager.lib.homeManagerConfiguration {
-            pkgs = pkgs;
-            modules = [
-              ./home/rejin.nix
-              stylix.homeManagerModules.stylix
-            ];
-            extraSpecialArgs = { inherit pkgs; };
-            username = "rejin";
-            homeDirectory = "/home/rejin";
-          };
-        };
-      });
+    homeConfigurations = {
+      rejin = home-manager.lib.homeManagerConfiguration {
+        pkgs = import nixpkgs { system = "x86_64-linux"; config.allowUnfree = true; };
+        modules = [
+          ./home/rejin.nix
+          #stylix.homeManagerModules.stylix
+        ];
+        extraSpecialArgs = { pkgs = import nixpkgs { system = "x86_64-linux"; config.allowUnfree = true; }; };
+        username = "rejin";
+        homeDirectory = "/home/rejin";
+      };
+    };
+  };
 }
 

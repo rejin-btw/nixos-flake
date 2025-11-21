@@ -103,18 +103,16 @@ EOF
   hardware.firmware = [
   (pkgs.stdenv.mkDerivation {
     name = "hda-jack-retask-fw";
-    src = /etc/nixos;
+    # Relative path from hosts/default.nix to hardware/firmware is ../hardware/firmware
+    src = ../hardware/firmware;
     installPhase = ''
       mkdir -p $out/lib/firmware
       cp hda-jack-retask.fw $out/lib/firmware/
     '';
   })
-
 ];
-
-  #15.ENABLING STYLIX
-  stylix.enable = true; 
-  stylix.polarity = "dark";
+ 
+  
 
 
 
