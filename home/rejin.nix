@@ -83,17 +83,17 @@ in
     (pkgs.writeScriptBin "niri-mouse-scroll" ''
       #!${pkgs.python3.withPackages (ps: [ ps.evdev ])}/bin/python3
       ${builtins.readFile "${scriptsDir}/niri-mouse-scroll.py"}
-    ''')
+    '')
 
     (writeShellScriptBin "start-niri" ''
       export PATH="${lib.makeBinPath [ niri coreutils ]}:$$PATH"
       ${builtins.readFile "${scriptsDir}/start-niri.sh"}
-    ''')
+    '')
 
     (writeShellScriptBin "fuzzel-bookmarks" ''
       export PATH="${lib.makeBinPath [ python3 sqlite ]}:$$PATH"
       python3 ${scriptsDir}/firefox_bookmarks_fuzzel.py
-    ''')
+    '')
 
     (writeShellScriptBin "watch-firefox-bookmarks" ''
       export PATH="${lib.makeBinPath [ inotify-tools python3 ]}:$$PATH"
