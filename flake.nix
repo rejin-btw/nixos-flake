@@ -13,7 +13,7 @@
       inherit system;
       config = { allowUnfree = true; };
     };
-    dotfilesPath = self.path + "/dotfiles";  # Correct absolute path for dotfiles inside flake root
+    dotfilesPath = self.path + "/dotfiles";  # Absolute path to dotfiles dir in flake
   in {
     nixosConfigurations = {
       rejin-nixos = nixpkgs.lib.nixosSystem {
@@ -33,14 +33,13 @@
       rejin = home-manager.lib.homeManagerConfiguration {
         inherit pkgs;
         modules = [
-          # Pass dotfilesPath as an extra argument to your home module
-          (import ./home/rejin.nix {
-            inherit pkgs;
-            lib = pkgs.lib;
-            dotfilesPath = dotfilesPath;
-          })
+          ./home/rejin.nix
         ];
-        extraSpecialArgs = { inherit pkgs; };
+        extraSpecialArgs = {
+          inherit pkgs;
+          lib = pkgs.lib;
+          dotfilesPath = dotfilesPath;
+        };
       };
     };
   };
