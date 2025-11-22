@@ -88,7 +88,7 @@ in
 
     (writeShellScriptBin "fuzzel-bookmarks" ''
       export PATH="${lib.makeBinPath [ python3 sqlite ]}:$$PATH"
-      python3 ${scriptsDir}/firefox_bookmarks_fuzzel.py
+      python3 ${scriptsDir}/firefox_bookmarks_fuzzel.py"}
     '')
 
     (writeShellScriptBin "watch-firefox-bookmarks" ''
