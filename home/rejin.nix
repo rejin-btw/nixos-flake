@@ -44,7 +44,6 @@ in
     rpm
     p7zip
     freetube
-    ddcutil
 
     # Custom scripts
     (writeShellScriptBin "auto-consume" ''
@@ -68,12 +67,12 @@ in
     '')
 
     (writeShellScriptBin "toggle-audio" ''
-      export PATH="${lib.makeBinPath [ pulseaudio coreutils ]}:$$PATH"
+      export PATH="${lib.makeBinPath [ pkgs.pulseaudio pkgs.gnugrep pkgs.gawk pkgs.coreutils ]}:$$PATH"
       ${builtins.readFile "${scriptsDir}/scripts/toggle-audio.sh"}
     '')
 
     (writeShellScriptBin "vcp-control" ''
-      export PATH="${lib.makeBinPath [ coreutils ]}:$$PATH"
+      export PATH="${lib.makeBinPath [ ddcutil coreutils ]}:$$PATH"
       ${builtins.readFile "${scriptsDir}/scripts/vcp_full_control.sh"}
     '')
 
