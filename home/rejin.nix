@@ -32,10 +32,6 @@ in
     tmux
     python3
     inotify-tools
-    krusader
-    krename
-    libsForQt5.kio-extras
-    kdiff3
     lhasa
     zip
     unzip
@@ -45,6 +41,17 @@ in
     p7zip
     freetube
     zathura
+    gnome-themes-extra
+    adwaita-qt
+    xfce.thunar
+    xfce.thunar-volman
+    xfce.thunar-media-tags-plugin
+    xfce.thunar-archive-plugin
+    lf
+    fd
+    fzf
+    mpv
+    
 
     # Custom scripts
     (writeShellScriptBin "auto-consume" ''
@@ -132,6 +139,25 @@ in
     common.default = "*";
   };
 };
+
+
+  
+
+  gtk = {
+  enable = true;
+  theme = {
+    name = "Adwaita-dark";
+    package = pkgs.gnome-themes-extra;
+  };
+  gtk3.extraConfig.gtk-application-prefer-dark-theme = 1;
+  gtk4.extraConfig.gtk-application-prefer-dark-theme = 1;
+};
+
+qt = {
+  enable = true;
+  style.name = "adwaita-dark";
+};
+
 
    
   
