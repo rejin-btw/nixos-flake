@@ -124,6 +124,7 @@ in
    ".config/mako".source = "${dotfilesPath}/../.config/mako";
    ".config/fuzzel".source = "${dotfilesPath}/../.config/fuzzel";
    ".config/zathura".source = "${dotfilesPath}/../.config/zathura";
+   ".config/lf".source = "${dotfilesPath}/../.config/lf";
       "scripts".source = "${dotfilesPath}";
  };
 
