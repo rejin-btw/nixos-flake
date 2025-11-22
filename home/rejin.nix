@@ -2,7 +2,7 @@
 
 let
   scriptsDir = pkgs.runCommand "scripts" {
-    src = "${dotfilesPath}/scripts";
+    src = "${dotfilesPath}";
   } ''
     mkdir -p $out
     cp -r $src $out
@@ -112,12 +112,13 @@ in
     programs.firefox.enable = true;
 
    home.file = {
-     ".config/niri".source = "${dotfilesPath}/.config/niri/nix";
-     ".config/mako".source = "${dotfilesPath}/.config/mako";
-     ".config/fuzzel".source = "${dotfilesPath}/.config/fuzzel";
-     "scripts".source = "${dotfilesPath}/scripts";
-   };
-
+   ".config/niri".source = "${dotfilesPath}/../.config/niri/nix";
+   ".config/mako".source = "${dotfilesPath}/../.config/mako";
+   ".config/fuzzel".source = "${dotfilesPath}/../.config/fuzzel";
+   "scripts".source = "${dotfilesPath}";
+ };
+   
+  
    home.sessionVariables = {
      EDITOR = "vim";
    };
