@@ -2,11 +2,11 @@
   "nodes": {
     "dotfiles": {
       "locked": {
-        "lastModified": 1763828961,
-        "narHash": "sha256-7GC37H9DvRy+Ym8J+WPgExaz5Kn1YzoOZAeEfdIaHwY=",
+        "lastModified": 1763829296,
+        "narHash": "sha256-NWAnIgeaJzDVg6ItGZXXtrHsoIDBN/s5jye+kGDDvIM=",
         "owner": "rejin-btw",
         "repo": "dotfiles",
-        "rev": "ffd7d89c88f1b19789fde3e48756db97e3ad7b90",
+        "rev": "05c3e5df54ba3b5d9b06c175500c5e2c3aeda01e",
         "type": "github"
       },
       "original": {
