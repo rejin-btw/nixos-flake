@@ -117,6 +117,18 @@ in
    ".config/fuzzel".source = "${dotfilesPath}/../.config/fuzzel";
    "scripts".source = "${dotfilesPath}";
  };
+
+    xdg.portal = {
+  enable = true;
+  extraPortals = with pkgs; [
+    xdg-desktop-portal-gtk
+    xdg-desktop-portal-gnome
+  ];
+  config = {
+    common.default = "*";
+  };
+};
+
    
   
    home.sessionVariables = {
