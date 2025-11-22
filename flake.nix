@@ -10,11 +10,7 @@
   outputs = { self, nixpkgs, home-manager, dotfiles, ... }:
   let
     system = "x86_64-linux";
-    pkgs = import nixpkgs {
-      inherit system;
-      config = { allowUnfree = true; };
-    };
-    dotfilesPath = "${dotfiles}/scripts";  # Referencing dotfiles relative to flake root
+    dotfilesPath = "${dotfiles}/scripts";
   in {
     nixosConfigurations = {
       rejin-nixos = nixpkgs.lib.nixosSystem {
@@ -24,15 +20,18 @@
           home-manager.nixosModules.home-manager
           {
             nix.settings.experimental-features = [ "nix-command" "flakes" ];
+            nixpkgs.config.allowUnfree = true;
           }
         ];
-        specialArgs = { inherit pkgs; };
       };
     };
 
     homeConfigurations = {
       rejin = home-manager.lib.homeManagerConfiguration {
-        inherit pkgs;
+        pkgs = import nixpkgs {
+          inherit system;
+          config = { allowUnfree = true; };
+        };
         modules = [
           ./home/rejin.nix
         ];
