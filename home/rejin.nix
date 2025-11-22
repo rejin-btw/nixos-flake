@@ -44,6 +44,7 @@ in
     rpm
     p7zip
     freetube
+    ddcutil
 
     # Custom scripts
     (writeShellScriptBin "auto-consume" ''
