@@ -116,9 +116,10 @@ in
    ".config/niri".source = "${dotfilesPath}/../.config/niri/nix";
    ".config/mako".source = "${dotfilesPath}/../.config/mako";
    ".config/fuzzel".source = "${dotfilesPath}/../.config/fuzzel";
-   ".config/zathura".source = "${dotfilesPath}/../.config/zathura";
-   "scripts".source = "${dotfilesPath}";
+      "scripts".source = "${dotfilesPath}";
  };
+
+  xdg.configFile."zathura/zathurarc".source = "${dotfilesPath}/../.config/zathura/zathurarc";
 
     xdg.portal = {
   enable = true;
