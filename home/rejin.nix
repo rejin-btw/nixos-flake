@@ -45,6 +45,7 @@ in
     p7zip
     freetube
 
+    # Custom scripts
     (writeShellScriptBin "auto-consume" ''
       export PATH="${lib.makeBinPath [ libnotify jq procps niri coreutils ]}:$$PATH"
       ${builtins.readFile "${scriptsDir}/auto_consume.sh"}
@@ -78,7 +79,7 @@ in
     (pkgs.writeScriptBin "niri-mouse-scroll" ''
       #!${pkgs.python3.withPackages (ps: [ ps.evdev ])}/bin/python3
       ${builtins.readFile "${scriptsDir}/niri-mouse-scroll.py"}
-    '')
+    ''')
 
     (writeShellScriptBin "start-niri" ''
       export PATH="${lib.makeBinPath [ niri coreutils ]}:$$PATH"
@@ -110,14 +111,5 @@ in
   programs.firefox.enable = true;
 
   home.file = {
-    ".config/niri".source = "${dotfilesPath}/.config/niri/nix";
-    ".config/mako".source = "${dotfilesPath}/.config/mako";
-    ".config/fuzzel".source = "${dotfilesPath}/.config/fuzzel";
-    "scripts".source = "${dotfilesPath}/scripts";
-  };
-
-  home.sessionVariables = {
-    EDITOR = "vim";
-  };
-}
+    ".config/niri".source = "${
 

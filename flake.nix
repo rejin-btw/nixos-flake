@@ -13,8 +13,7 @@
       inherit system;
       config = { allowUnfree = true; };
     };
-    # Use self.outPath to get the flake's root directory path
-    dotfilesPath = "${self}/dotfiles";
+    dotfilesPath = "${self}/dotfiles";  # Referencing dotfiles relative to flake root
   in {
     nixosConfigurations = {
       rejin-nixos = nixpkgs.lib.nixosSystem {
