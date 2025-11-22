@@ -120,7 +120,7 @@ in
     programs.firefox.enable = true;
 
    home.file = {
-   ".config/niri".source = "${dotfilesPath}/../.config/niri/nix";
+   ".config/niri".source = "${dotfilesPath}/../.config/niri";
    ".config/mako".source = "${dotfilesPath}/../.config/mako";
    ".config/fuzzel".source = "${dotfilesPath}/../.config/fuzzel";
    ".config/zathura".source = "${dotfilesPath}/../.config/zathura";
