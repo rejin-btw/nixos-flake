@@ -51,6 +51,7 @@ in
     fd
     fzf
     mpv
+    niri
     
 
     # Custom scripts
@@ -118,6 +119,8 @@ in
   };
 
     programs.firefox.enable = true;
+    
+    
 
    home.file = {
    ".config/niri".source = "${dotfilesPath}/../.config/niri/nix";
@@ -159,6 +162,8 @@ qt = {
   style.name = "adwaita-dark";
 };
 
+
+  
 
    
   

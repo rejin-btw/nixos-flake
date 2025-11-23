@@ -58,7 +58,7 @@ EOF
   ];
 
   # 7. PROGRAMS
-  programs.niri.enable = true;
+  #programs.niri.enable = true;
 
   # 8. USERS
   users.users.rejin = {
