@@ -16,7 +16,6 @@ in
   home.packages = with pkgs; [
     vim
     wget
-    alacritty
     fuzzel
     mako
     neovim
@@ -51,12 +50,14 @@ in
     fd
     fzf
     mpv
-    gnome-disk-utility
-    isoimagewriter
-    udisks
-    caligula
-    usbimager
     localsend
+    eza
+    bat
+    ripgrep
+    alacritty
+    starship
+    zoxide
+    
 
     
 
@@ -96,7 +97,7 @@ in
       ${builtins.readFile "${scriptsDir}/scripts/niri-mouse-scroll.py"}
     '')
 
-    (writeShellScriptBin "start-niri" ''
+    (writeSihellScriptBin "start-niri" ''
       export PATH="${lib.makeBinPath [ niri coreutils ]}:$$PATH"
       ${builtins.readFile "${scriptsDir}/scripts/start-niri.sh"}
     '')
@@ -117,7 +118,7 @@ in
     enable = true;
     package = pkgs.gitFull;
     userName = "rejin-btw";
-    userEmail = "rejinks@zohomail.in";
+i    userEmail = "rejinks@zohomail.in";
     extraConfig = {
       credential.helper = "libsecret";
       core.editor = "vim";
@@ -125,6 +126,10 @@ in
   };
 
     programs.firefox.enable = true;
+
+
+
+
 
     
 
@@ -138,6 +143,7 @@ in
    ".config/fuzzel".source = "${dotfilesPath}/../.config/fuzzel";
    ".config/zathura".source = "${dotfilesPath}/../.config/zathura";
    ".config/lf".source = "${dotfilesPath}/../.config/lf";
+   ".config/alacritty".source= "${dotfilesPath}/../.config/alacritty";
       "scripts".source = "${dotfilesPath}";
  };
 

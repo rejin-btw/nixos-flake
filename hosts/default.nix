@@ -59,8 +59,9 @@ EOF
 
   # 7. PROGRAMS
   programs.niri.enable = true;
+  programs.fish.enable = true;
 
-  services.udisks2.enable = true;
+  #services.udisks2.enable = true;
 
   
 
@@ -69,18 +70,24 @@ EOF
     isNormalUser = true;
 
     extraGroups = [ "wheel" "i2c" "input" ];
+    shell = pkgs.fish
     packages = with pkgs; [ ];
   };
 
   # 9. FONTS
   fonts = {
     enableDefaultPackages = true;
-    packages = with pkgs; [ roboto ];
+    packages = with pkgs; [ 
+      roboto               # Keep Roboto for UI
+      nerd-fonts.jetbrains-mono  # The new way to install Nerd Fonts in 25.05+
+    ];
+
     fontconfig = {
       defaultFonts = {
         sansSerif = [ "Roboto" ];
         serif = [ "Roboto Slab" ];
-        monospace = [ "Roboto Mono" ];
+        # Set JetBrains Mono as the default for terminals/code
+        monospace = [ "JetBrainsMono Nerd Font" ]; 
       };
     };
   };
