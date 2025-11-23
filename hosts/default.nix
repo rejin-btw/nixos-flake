@@ -58,7 +58,15 @@ EOF
   ];
 
   # 7. PROGRAMS
-  #programs.niri.enable = true;
+  programs.niri = {
+  enable = true;
+  settings = {
+    environment = {
+      PATH = "/run/current-system/sw/bin:/home/rejin/.nix-profile/bin:/home/rejin/.local/bin";
+    };
+  };
+};
+
 
   # 8. USERS
   users.users.rejin = {
