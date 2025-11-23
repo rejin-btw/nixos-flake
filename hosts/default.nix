@@ -59,6 +59,9 @@ EOF
 
   # 7. PROGRAMS
   programs.niri.enable = true;
+
+  services.udisks2.enable = true;
+
   
 
   # 8. USERS

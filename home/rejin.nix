@@ -51,7 +51,13 @@ in
     fd
     fzf
     mpv
-    niri
+    gnome-disk-utility
+    isoimagewriter
+    udisks
+    caligula
+    usbimager
+    localsend
+
     
 
     # Custom scripts
@@ -119,6 +125,10 @@ in
   };
 
     programs.firefox.enable = true;
+
+    
+
+
     
     
 
