@@ -70,7 +70,7 @@ EOF
     isNormalUser = true;
 
     extraGroups = [ "wheel" "i2c" "input" ];
-    shell = pkgs.fish
+    shell = pkgs.fish;
     packages = with pkgs; [ ];
   };
 

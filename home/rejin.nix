@@ -97,7 +97,7 @@ in
       ${builtins.readFile "${scriptsDir}/scripts/niri-mouse-scroll.py"}
     '')
 
-    (writeSihellScriptBin "start-niri" ''
+    (writeShellScriptBin "start-niri" ''
       export PATH="${lib.makeBinPath [ niri coreutils ]}:$$PATH"
       ${builtins.readFile "${scriptsDir}/scripts/start-niri.sh"}
     '')
@@ -118,7 +118,7 @@ in
     enable = true;
     package = pkgs.gitFull;
     userName = "rejin-btw";
-i    userEmail = "rejinks@zohomail.in";
+    userEmail = "rejinks@zohomail.in";
     extraConfig = {
       credential.helper = "libsecret";
       core.editor = "vim";
