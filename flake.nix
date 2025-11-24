@@ -4,13 +4,19 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.05";
     home-manager.url = "github:nix-community/home-manager/release-25.05";
-    # REMOVED: dotfiles input is gone.
+    nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
   };
 
-  # REMOVED: 'dotfiles' argument is gone from outputs
-  outputs = { self, nixpkgs, home-manager, ... }:
+  outputs = { self, nixpkgs, home-manager, nixpkgs-unstable, ... }:
   let
     system = "x86_64-linux";
+
+    # Define the Unstable Packages
+    pkgs-unstable = import nixpkgs-unstable {
+      inherit system;
+      config.allowUnfree = true;
+    };
+
   in {
     nixosConfigurations = {
       rejin-nixos = nixpkgs.lib.nixosSystem {
@@ -28,14 +34,21 @@
 
     homeConfigurations = {
       rejin = home-manager.lib.homeManagerConfiguration {
+        # 1. Define pkgs (Standard)
         pkgs = import nixpkgs {
           inherit system;
           config = { allowUnfree = true; };
+        }; # <--- NOTICE THIS CLOSING BRACE AND SEMICOLON. IMPORTANT!
+
+        # 2. Pass Unstable to your config (Sibling to pkgs)
+        extraSpecialArgs = {
+          inherit pkgs-unstable;
         };
+
+        # 3. Load your module (Sibling to pkgs)
         modules = [
-          ./home/rejin_live.nix
+          ./home/rejin.nix  # Make sure this filename matches what is on your disk!
         ];
-        # REMOVED: extraSpecialArgs is gone because it was empty.
       };
     };
   };

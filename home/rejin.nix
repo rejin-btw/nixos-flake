@@ -1,4 +1,4 @@
-{ config, pkgs, lib, ... }:
+{ config, pkgs, lib, pkgs-unstable, ... }:
 
 let
   # --- CONFIGURATION ---
@@ -30,19 +30,57 @@ in
   # --- PACKAGES & WRAPPERS ---
   home.packages = with pkgs; [
     # GUI / CLI Tools
-    vim wget fuzzel mako neovim wl-clipboard cliphist wl-clip-persist
-    telegram-desktop phinger-cursors appflowy tree stow pavucontrol
-    tmux python3 inotify-tools lhasa zip unzip arj unar rpm p7zip
-    freetube zathura gnome-themes-extra adwaita-qt
-    xfce.thunar xfce.thunar-volman xfce.thunar-media-tags-plugin xfce.thunar-archive-plugin
-    lf fd fzf mpv localsend eza bat ripgrep alacritty starship zoxide
+    vim
+    wget
+    fuzzel
+    mako
+    neovim
+    wl-clipboard
+    cliphist
+    wl-clip-persist
+    telegram-desktop
+    phinger-cursors
+    tree
+    stow
+    pavucontrol
+    tmux
+    python3
+    inotify-tools
+    lhasa
+    zip
+    unzip
+    arj
+    unar
+    rpm
+    p7zip
+    freetube
+    zathura
+    gnome-themes-extra
+    adwaita-qt
+    xfce.thunar
+    xfce.thunar-volman
+    xfce.thunar-media-tags-plugin
+    xfce.thunar-archive-plugin
+    lf
+    fd
+    fzf
+    mpv
+    localsend
+    eza
+    bat
+    ripgrep
+    alacritty
+    starship
+    zoxide
+    gnome-disk-utility
+    pkgs-unstable.appflowy
 
     # --- CUSTOM SCRIPTS (LIVE EDITING ENABLED) ---
     # These wrappers set up the dependencies ($PATH) but execute the file 
     # directly from your disk. Edit the file -> Run script -> Instant update.
 
     (writeShellScriptBin "auto-consume" ''
-      export PATH="${lib.makeBinPath [ libnotify jq procps niri coreutils ]}:$PATH"
+      export PATH="${lib.makeBinPath [ libnotify jq procps niri coreutils python3 ]}:$PATH"
       exec ${localDotfiles}/scripts/auto_consume.sh "$@"
     '')
 
@@ -81,6 +119,7 @@ in
       exec ${localDotfiles}/scripts/bookmarks_watcher.sh "$@"
     '')
 
+    
     # --- PYTHON SCRIPTS ---
     # We create a wrapper that includes the python env, then runs your local file.
 
@@ -94,6 +133,28 @@ in
       exec python3 ${localDotfiles}/scripts/firefox-bookmarks-fuzzel.py "$@"
     '')
   ];
+
+
+  # Auto-start the Polkit Authentication Agent
+  systemd.user.services.polkit-gnome-authentication-agent-1 = {
+    Unit = {
+      Description = "polkit-gnome-authentication-agent-1";
+      Wants = [ "graphical-session.target" ];
+      After = [ "graphical-session.target" ];
+    };
+    Service = {
+        Type = "simple";
+        # Nix will automatically find the correct path here every time you update
+        ExecStart = "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1";
+        Restart = "on-failure";
+        RestartSec = 1;
+        TimeoutStopSec = 10;
+    };
+    Install = {
+      WantedBy = [ "graphical-session.target" ];
+    };
+  };
+
 
   # --- GIT ---
   programs.git = {
