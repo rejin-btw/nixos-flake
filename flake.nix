@@ -38,7 +38,7 @@
           config = { allowUnfree = true; };
         };
         modules = [
-          ./home/rejin.nix
+          ./home/rejin_live.nix
         ];
         extraSpecialArgs = {
           inherit dotfilesPath;
