@@ -8,7 +8,7 @@
     # --- THE FIX ---
     # OLD: dotfiles.url = "github:rejin-btw/dotfiles";
     # NEW: Point to your local repository on disk
-    dotfiles.url = "git+file:///home/rejin/dotfiles";
+    dotfiles.url = "path:/home/rejin/dotfiles";
   };
 
   outputs = { self, nixpkgs, home-manager, dotfiles, ... }:

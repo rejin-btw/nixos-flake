@@ -2,17 +2,14 @@
   "nodes": {
     "dotfiles": {
       "locked": {
-        "lastModified": 1763935004,
-        "narHash": "sha256-ZPQv08juuUeRo1DwtGThrruhIZCeqqFclAE2Nd9Rla4=",
-        "owner": "rejin-btw",
-        "repo": "dotfiles",
-        "rev": "cf1650f217863d88f1df0e2feb74dac37f145a29",
-        "type": "github"
+        "lastModified": 1763935008,
+        "narHash": "sha256-1I9rdRzS+S8W5MZ4WRagEebCAOsa1qh4Q2pHBgbqAnE=",
+        "path": "/home/rejin/dotfiles",
+        "type": "path"
       },
       "original": {
-        "owner": "rejin-btw",
-        "repo": "dotfiles",
-        "type": "github"
+        "path": "/home/rejin/dotfiles",
+        "type": "path"
       }
     },
     "home-manager": {
