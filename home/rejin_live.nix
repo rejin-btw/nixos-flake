@@ -1,4 +1,4 @@
-{ config, pkgs, lib, dotfilesPath, ... }:
+{ config, pkgs, lib, ... }:
 
 let
   # --- CONFIGURATION ---
