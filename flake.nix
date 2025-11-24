@@ -4,15 +4,13 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.05";
     home-manager.url = "github:nix-community/home-manager/release-25.05";
-    
-    # We keep this to lock the version, but we won't pass it as a path anymore
-    dotfiles.url = "path:/home/rejin/dotfiles";
+    # REMOVED: dotfiles input is gone.
   };
 
-  outputs = { self, nixpkgs, home-manager, dotfiles, ... }:
+  # REMOVED: 'dotfiles' argument is gone from outputs
+  outputs = { self, nixpkgs, home-manager, ... }:
   let
     system = "x86_64-linux";
-    # DELETE THIS LINE: dotfilesPath = "${dotfiles}/scripts";
   in {
     nixosConfigurations = {
       rejin-nixos = nixpkgs.lib.nixosSystem {
@@ -37,10 +35,7 @@
         modules = [
           ./home/rejin_live.nix
         ];
-        extraSpecialArgs = {
-          # DELETE THIS LINE: inherit dotfilesPath;
-          # You don't need to pass anything extra now!
-        };
+        # REMOVED: extraSpecialArgs is gone because it was empty.
       };
     };
   };

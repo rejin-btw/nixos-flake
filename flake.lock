@@ -1,17 +1,5 @@
 {
   "nodes": {
-    "dotfiles": {
-      "locked": {
-        "lastModified": 1763935008,
-        "narHash": "sha256-1I9rdRzS+S8W5MZ4WRagEebCAOsa1qh4Q2pHBgbqAnE=",
-        "path": "/home/rejin/dotfiles",
-        "type": "path"
-      },
-      "original": {
-        "path": "/home/rejin/dotfiles",
-        "type": "path"
-      }
-    },
     "home-manager": {
       "inputs": {
         "nixpkgs": "nixpkgs"
@@ -65,7 +53,6 @@
     },
     "root": {
       "inputs": {
-        "dotfiles": "dotfiles",
         "home-manager": "home-manager",
         "nixpkgs": "nixpkgs_2"
       }
