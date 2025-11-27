@@ -74,6 +74,13 @@ in
     zoxide
     gnome-disk-utility
     pkgs-unstable.appflowy
+    rustc 
+    cargo
+    gcc
+    osu-lazer-bin
+    chromium-bsu
+    sgt-puzzles
+    superTuxKart
 
     # --- CUSTOM SCRIPTS (LIVE EDITING ENABLED) ---
     # These wrappers set up the dependencies ($PATH) but execute the file 
@@ -119,6 +126,11 @@ in
       exec ${localDotfiles}/scripts/bookmarks_watcher.sh "$@"
     '')
 
+    (writeShellScriptBin "endless-sky" ''
+      export PATH="${lib.makeBinPath [ pkgs.endless-sky ]}:$PATH"
+      exec /home/rejin/dotfiles/scripts/endless-sky.sh "$@"
+    '')
+
     
     # --- PYTHON SCRIPTS ---
     # We create a wrapper that includes the python env, then runs your local file.
@@ -132,6 +144,7 @@ in
       export PATH="${lib.makeBinPath [ (pkgs.python3.withPackages (ps: [ ps.evdev ])) ]}:$PATH"
       exec python3 ${localDotfiles}/scripts/firefox-bookmarks-fuzzel.py "$@"
     '')
+
   ];
 
 
