@@ -21,7 +21,13 @@
     };
   # 3. HARDWARE
   hardware.i2c.enable = true;
-  boot.kernelModules = [ "i2c-dev" ];
+  boot.kernelModules = [ "i2c-dev" "v4l2loopback" ];
+
+  #VIRTUAL CAMERA ACCESS FOR OBS
+  boot.extraModulePackages = with config.boot.kernelPackages; [
+  v4l2loopback
+  ];
+
 
  
   # 5. NETWORKING & TIME
@@ -41,6 +47,7 @@
   # 7. PROGRAMS
   programs.niri.enable = true;
   programs.fish.enable = true;
+  programs.noisetorch.enable = true;
 
   services.udisks2.enable = true;
   services.flatpak.enable = true;
@@ -52,7 +59,7 @@
   users.users.rejin = {
     isNormalUser = true;
 
-    extraGroups = [ "wheel" "i2c" "input" ];
+    extraGroups = [ "wheel" "i2c" "input" "video" ];
     shell = pkgs.fish;
     packages = with pkgs; [ ];
   };
@@ -61,14 +68,16 @@
   fonts = {
     enableDefaultPackages = true;
     packages = with pkgs; [ 
-      roboto               # Keep Roboto for UI
-      nerd-fonts.jetbrains-mono  # The new way to install Nerd Fonts in 25.05+
+      roboto               
+      nerd-fonts.jetbrains-mono
+      noto-fonts
+      lohit-fonts.tamil
     ];
 
     fontconfig = {
       defaultFonts = {
-        sansSerif = [ "Roboto" ];
-        serif = [ "Roboto Slab" ];
+        sansSerif = [ "Roboto" "Noto Sans Tamil" ];
+        serif = [ "Roboto Slab" "Noto Serif Tamil" ];
         # Set JetBrains Mono as the default for terminals/code
         monospace = [ "JetBrainsMono Nerd Font" ]; 
       };

@@ -81,6 +81,10 @@ in
     chromium-bsu
     sgt-puzzles
     superTuxKart
+    swaybg
+    obs-studio
+    alsa-utils
+    xwayland-satellite
 
     # --- CUSTOM SCRIPTS (LIVE EDITING ENABLED) ---
     # These wrappers set up the dependencies ($PATH) but execute the file 
@@ -173,15 +177,19 @@ in
   programs.git = {
     enable = true;
     package = pkgs.gitFull;
-    userName = "rejin-btw";
-    userEmail = "rejinks@zohomail.in";
-    extraConfig = {
+    settings = {
+      user = {
+        name = "rejin-btw";
+        email = "rejinks@zohomail.in";
+      };
       credential.helper = "libsecret";
       core.editor = "vim";
     };
   };
 
+
   programs.firefox.enable = true;
+
 
   # --- CONFIG MANAGEMENT (THE FIX) ---
   
