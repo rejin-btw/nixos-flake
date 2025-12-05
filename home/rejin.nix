@@ -135,6 +135,11 @@ in
       exec /home/rejin/dotfiles/scripts/endless-sky.sh "$@"
     '')
 
+    (writeShellScriptBin "clean-system" ''
+      export PATH="${lib.makeBinPath [ coreutils nix ]}:$PATH"
+      exec /home/rejin/dotfiles/scripts/clean-system.sh "$@"
+    '')
+
     
     # --- PYTHON SCRIPTS ---
     # We create a wrapper that includes the python env, then runs your local file.
