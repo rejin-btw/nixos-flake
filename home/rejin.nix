@@ -18,7 +18,11 @@ let
     "fuzzel" 
     "zathura" 
     "lf" 
-    "alacritty" 
+    "alacritty"
+    "nvim"
+    "starship.toml"
+    "fastfetch"
+    
   ];
 
 in
@@ -85,6 +89,8 @@ in
     obs-studio
     alsa-utils
     xwayland-satellite
+    fastfetch
+    btop
 
     # --- CUSTOM SCRIPTS (LIVE EDITING ENABLED) ---
     # These wrappers set up the dependencies ($PATH) but execute the file 
@@ -193,6 +199,13 @@ in
   };
 
 
+
+  programs.fish = {
+  enable = true;              
+  
+};
+
+
   programs.firefox.enable = true;
 
 
@@ -206,6 +219,7 @@ in
     # Add special cases (Niri points to a subfolder)
     {
       "niri".source = mkLink "niri/nix";
+      "fish/conf.d/rejin.fish".source = mkLink "fish/conf.d/rejin.fish";
     };
 
   # 2. Handle files in Home Root (Scripts folder)
