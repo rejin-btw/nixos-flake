@@ -91,6 +91,7 @@ in
     xwayland-satellite
     fastfetch
     btop
+    anki-bin
 
     # --- CUSTOM SCRIPTS (LIVE EDITING ENABLED) ---
     # These wrappers set up the dependencies ($PATH) but execute the file 
