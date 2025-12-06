@@ -22,6 +22,9 @@ let
     "nvim"
     "starship.toml"
     "fastfetch"
+    "foot"
+    "ctpv"
+    "pistol"
     
   ];
 
@@ -92,6 +95,13 @@ in
     fastfetch
     btop
     anki-bin
+    imv #unage viewer
+    ctpv #image generator for lf
+    ffmpegthumbnailer
+    foot
+    libsixel
+    pistol
+    chafa
 
     # --- CUSTOM SCRIPTS (LIVE EDITING ENABLED) ---
     # These wrappers set up the dependencies ($PATH) but execute the file 
