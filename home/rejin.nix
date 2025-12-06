@@ -109,6 +109,8 @@ in
     statix
     nil
     nixfmt-rfc-style
+    imagemagick
+    swww
 
     # --- CUSTOM SCRIPTS (LIVE EDITING ENABLED) ---
     # These wrappers set up the dependencies ($PATH) but execute the file
