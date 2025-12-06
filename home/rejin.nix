@@ -1,4 +1,10 @@
-{ config, pkgs, lib, pkgs-unstable, ... }:
+{
+  config,
+  pkgs,
+  lib,
+  pkgs-unstable,
+  ...
+}:
 
 let
   # --- CONFIGURATION ---
@@ -13,19 +19,18 @@ let
   mkLinkHome = path: config.lib.file.mkOutOfStoreSymlink "${localDotfiles}/${path}";
 
   # List of standard config folders to loop over
-  simpleConfigs = [ 
-    "mako" 
-    "fuzzel" 
-    "zathura" 
-    "lf" 
+  simpleConfigs = [
+    "mako"
+    "fuzzel"
+    "zathura"
+    "lf"
     "alacritty"
     "nvim"
     "starship.toml"
     "fastfetch"
     "foot"
-    "ctpv"
     "pistol"
-    
+
   ];
 
 in
@@ -81,7 +86,7 @@ in
     zoxide
     gnome-disk-utility
     pkgs-unstable.appflowy
-    rustc 
+    rustc
     cargo
     gcc
     osu-lazer-bin
@@ -95,55 +100,105 @@ in
     fastfetch
     btop
     anki-bin
-    imv #unage viewer
-    ctpv #image generator for lf
+    imv # unage viewer
     ffmpegthumbnailer
     foot
     libsixel
     pistol
     chafa
+    statix
+    nil
+    nixfmt-rfc-style
 
     # --- CUSTOM SCRIPTS (LIVE EDITING ENABLED) ---
-    # These wrappers set up the dependencies ($PATH) but execute the file 
+    # These wrappers set up the dependencies ($PATH) but execute the file
     # directly from your disk. Edit the file -> Run script -> Instant update.
 
     (writeShellScriptBin "auto-consume" ''
-      export PATH="${lib.makeBinPath [ libnotify jq procps niri coreutils python3 ]}:$PATH"
+      export PATH="${
+        lib.makeBinPath [
+          libnotify
+          jq
+          procps
+          niri
+          coreutils
+          python3
+        ]
+      }:$PATH"
       exec ${localDotfiles}/scripts/auto_consume.sh "$@"
     '')
 
     (writeShellScriptBin "datetime-notify" ''
-      export PATH="${lib.makeBinPath [ libnotify coreutils ]}:$PATH"
+      export PATH="${
+        lib.makeBinPath [
+          libnotify
+          coreutils
+        ]
+      }:$PATH"
       exec ${localDotfiles}/scripts/datetime_notify.sh "$@"
     '')
 
     (writeShellScriptBin "nvim-thunar" ''
-      export PATH="${lib.makeBinPath [ neovim coreutils ]}:$PATH"
+      export PATH="${
+        lib.makeBinPath [
+          neovim
+          coreutils
+        ]
+      }:$PATH"
       exec ${localDotfiles}/scripts/nvim_thunar.sh "$@"
     '')
 
     (writeShellScriptBin "ram-monitor" ''
-      export PATH="${lib.makeBinPath [ libnotify procps gawk coreutils ]}:$PATH"
+      export PATH="${
+        lib.makeBinPath [
+          libnotify
+          procps
+          gawk
+          coreutils
+        ]
+      }:$PATH"
       exec ${localDotfiles}/scripts/ram_monitor.sh "$@"
     '')
 
     (writeShellScriptBin "toggle-audio" ''
-      export PATH="${lib.makeBinPath [ pkgs.pulseaudio pkgs.gnugrep pkgs.gawk pkgs.coreutils ]}:$PATH"
+      export PATH="${
+        lib.makeBinPath [
+          pkgs.pulseaudio
+          pkgs.gnugrep
+          pkgs.gawk
+          pkgs.coreutils
+        ]
+      }:$PATH"
       exec ${localDotfiles}/scripts/toggle-audio.sh "$@"
     '')
 
     (writeShellScriptBin "vcp-control" ''
-      export PATH="${lib.makeBinPath [ ddcutil coreutils ]}:$PATH"
+      export PATH="${
+        lib.makeBinPath [
+          ddcutil
+          coreutils
+        ]
+      }:$PATH"
       exec ${localDotfiles}/scripts/vcp_full_control.sh "$@"
     '')
 
     (writeShellScriptBin "start-niri" ''
-      export PATH="${lib.makeBinPath [ niri coreutils ]}:$PATH"
+      export PATH="${
+        lib.makeBinPath [
+          niri
+          coreutils
+        ]
+      }:$PATH"
       exec ${localDotfiles}/scripts/start-niri.sh "$@"
     '')
 
     (writeShellScriptBin "watch-firefox-bookmarks" ''
-      export PATH="${lib.makeBinPath [ inotify-tools python3 ]}:$PATH"
+      export PATH="${
+        lib.makeBinPath [
+          inotify-tools
+          python3
+        ]
+      }:$PATH"
       exec ${localDotfiles}/scripts/bookmarks_watcher.sh "$@"
     '')
 
@@ -153,11 +208,15 @@ in
     '')
 
     (writeShellScriptBin "clean-system" ''
-      export PATH="${lib.makeBinPath [ coreutils nix ]}:$PATH"
+      export PATH="${
+        lib.makeBinPath [
+          coreutils
+          nix
+        ]
+      }:$PATH"
       exec /home/rejin/dotfiles/scripts/clean-system.sh "$@"
     '')
 
-    
     # --- PYTHON SCRIPTS ---
     # We create a wrapper that includes the python env, then runs your local file.
 
@@ -173,7 +232,6 @@ in
 
   ];
 
-
   # Auto-start the Polkit Authentication Agent
   systemd.user.services.polkit-gnome-authentication-agent-1 = {
     Unit = {
@@ -182,18 +240,17 @@ in
       After = [ "graphical-session.target" ];
     };
     Service = {
-        Type = "simple";
-        # Nix will automatically find the correct path here every time you update
-        ExecStart = "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1";
-        Restart = "on-failure";
-        RestartSec = 1;
-        TimeoutStopSec = 10;
+      Type = "simple";
+      # Nix will automatically find the correct path here every time you update
+      ExecStart = "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1";
+      Restart = "on-failure";
+      RestartSec = 1;
+      TimeoutStopSec = 10;
     };
     Install = {
       WantedBy = [ "graphical-session.target" ];
     };
   };
-
 
   # --- GIT ---
   programs.git = {
@@ -209,24 +266,22 @@ in
     };
   };
 
-
-
   programs.fish = {
-  enable = true;              
-  
-};
+    enable = true;
 
+  };
 
   programs.firefox.enable = true;
 
-
   # --- CONFIG MANAGEMENT (THE FIX) ---
-  
+
   # 1. Handle .config files
-  xdg.configFile = 
+  xdg.configFile =
     # Loop over the simple folders (recursive = false by default)
-    (lib.genAttrs simpleConfigs (name: { source = mkLink name; })) 
-    // 
+    (lib.genAttrs simpleConfigs (name: {
+      source = mkLink name;
+    }))
+    //
     # Add special cases (Niri points to a subfolder)
     {
       "niri".source = mkLink "niri/nix";
@@ -241,18 +296,29 @@ in
   # --- THEME & INTEGRATION ---
   xdg.portal = {
     enable = true;
-    extraPortals = with pkgs; [ xdg-desktop-portal-gtk xdg-desktop-portal-gnome ];
+    extraPortals = with pkgs; [
+      xdg-desktop-portal-gtk
+      xdg-desktop-portal-gnome
+    ];
     config.common.default = "*";
   };
 
   gtk = {
     enable = true;
-    theme = { name = "Adwaita-dark"; package = pkgs.gnome-themes-extra; };
+    theme = {
+      name = "Adwaita-dark";
+      package = pkgs.gnome-themes-extra;
+    };
     gtk3.extraConfig.gtk-application-prefer-dark-theme = 1;
     gtk4.extraConfig.gtk-application-prefer-dark-theme = 1;
   };
 
-  qt = { enable = true; style.name = "adwaita-dark"; };
+  qt = {
+    enable = true;
+    style.name = "adwaita-dark";
+  };
 
-  home.sessionVariables = { EDITOR = "vim"; };
+  home.sessionVariables = {
+    EDITOR = "vim";
+  };
 }
