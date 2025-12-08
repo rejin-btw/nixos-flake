@@ -32,15 +32,14 @@ if [ "$(id -u)" -eq 0 ]; then
         nix-shell -p git --run "git clone $FLAKE_REPO $FLAKE_PATH"
     fi
 
-    # 2. Hardware Logic (AUTOMATED HOSTNAME)
+    # 2. Hardware Logic
     echo "Generating Hardware Config..."
     
-    # CHECK FOR ARGUMENT: Did the user type 'bash install.sh my-pc'?
+    # Check for argument: 'bash install.sh my-pc'
     if [ -n "$1" ]; then
         NEW_HOSTNAME="$1"
         echo -e "${GREEN}Using hostname provided via argument: $NEW_HOSTNAME${NC}"
     else
-        # Fallback: Ask if no argument provided
         read -p "Enter Hostname for this machine: " NEW_HOSTNAME
     fi
     
@@ -53,8 +52,6 @@ if [ "$(id -u)" -eq 0 ]; then
     
     if [ -d "$HOST_DIR" ]; then
         echo -e "${RED}Host '$NEW_HOSTNAME' already exists in flake.${NC}"
-        # If automating, we assume we want to overwrite, or exit. 
-        # For safety, we exit unless forced, but in a VM test, you might want to overwrite.
         echo "Exiting to prevent accidental overwrite."
         exit 1
     fi
@@ -68,26 +65,35 @@ if [ "$(id -u)" -eq 0 ]; then
     # 3. Update Hostname in the new host file
     sed -i "s/networking.hostName = .*/networking.hostName = \"$NEW_HOSTNAME\";/" "$HOST_DIR/default.nix"
 
-    # 4. AUTOMATION: Inject new host into flake.nix
+    # 4. AUTOMATION: Inject FULL CONFIG block into flake.nix
     echo -e "${GREEN}Automating Flake Update...${NC}"
     
+    # We inject the full block with allowUnfree and experimental-features enabled
+    # to prevent evaluation errors during install.
     sed -i "/nixosConfigurations = {/a \\
       $NEW_HOSTNAME = nixpkgs.lib.nixosSystem {\\
         inherit system;\\
-        modules = [ ./hosts/$NEW_HOSTNAME/default.nix ];\\
+        modules = [\\
+          ./hosts/$NEW_HOSTNAME/default.nix\\
+          home-manager.nixosModules.home-manager\\
+          {\\
+            nix.settings.experimental-features = [ \"nix-command\" \"flakes\" ];\\
+            nixpkgs.config.allowUnfree = true;\\
+          }\\
+        ];\\
       };" "$FLAKE_PATH/flake.nix"
 
     echo "Added '$NEW_HOSTNAME' to flake.nix successfully."
 
-    # 5. Permission Fix & Install
+    # 5. Permission Fix & Git Registration
     chown -R 1000:100 "$FLAKE_PATH"
-
-    # --- CRITICAL FIX START ---
+    
+    # CRITICAL FIX: Add new files to git so Flakes can see them
     echo "Registering new files with Git..."
     cd "$FLAKE_PATH"
     git add .
-    # --- CRITICAL FIX END ---
-    
+
+    # 6. Install
     echo "Installing NixOS..."
     nixos-install --flake "$FLAKE_PATH#$NEW_HOSTNAME"
 
@@ -111,8 +117,10 @@ if [ "$(id -u)" -ne 0 ]; then
 
     # 2. Dynamic Home Manager Install
     echo "Applying Home Manager..."
+    # Uses the system's matching home-manager version automatically
     nix run nixpkgs#home-manager -- switch --flake ~/nixos-flake#$TARGET_USER
 
     echo -e "${GREEN}Setup Complete! Welcome home.${NC}"
     exit 0
 fi
+
