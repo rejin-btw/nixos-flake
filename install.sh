@@ -81,6 +81,13 @@ if [ "$(id -u)" -eq 0 ]; then
 
     # 5. Permission Fix & Install
     chown -R 1000:100 "$FLAKE_PATH"
+
+    # --- CRITICAL FIX START ---
+    echo "Registering new files with Git..."
+    cd "$FLAKE_PATH"
+    git add .
+    # --- CRITICAL FIX END ---
+    
     echo "Installing NixOS..."
     nixos-install --flake "$FLAKE_PATH#$NEW_HOSTNAME"
 
