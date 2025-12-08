@@ -14,7 +14,7 @@ BLUE='\033[0;34m'
 RED='\033[0;31m'
 NC='\033[0m'
 
-echo -e "${BLUE}=== NixOS 'Forever' Automated Bootstrap ===${NC}"
+echo -e "${BLUE}=== NixOS 'Forever' Bootstrap (Clean Method) ===${NC}"
 
 # --- CHECK 1: Are we in the Live ISO (Root)? ---
 if [ "$(id -u)" -eq 0 ]; then
@@ -33,69 +33,48 @@ if [ "$(id -u)" -eq 0 ]; then
     fi
 
     # 2. Hardware Logic
+    # We always write to 'hosts/bootstrap' because that is what flake.nix expects!
+    BOOTSTRAP_DIR="$FLAKE_PATH/hosts/bootstrap"
+    
+    # Ensure the directory exists (it should from the clone, but just in case)
+    mkdir -p "$BOOTSTRAP_DIR"
+    
     echo "Generating Hardware Config..."
+    nixos-generate-config --root "$MOUNT_POINT"
+    
+    # Overwrite the bootstrap files with this machine's real hardware config
+    mv "$MOUNT_POINT/etc/nixos/hardware-configuration.nix" "$BOOTSTRAP_DIR/"
+    
+    # Copy your template config to bootstrap/default.nix
+    cp "$FLAKE_PATH/hosts/default.nix" "$BOOTSTRAP_DIR/default.nix"
+
+    # 3. Handle Hostname (Optional, but good for reference)
     if [ -n "$1" ]; then
         NEW_HOSTNAME="$1"
-        echo -e "${GREEN}Using hostname: $NEW_HOSTNAME${NC}"
     else
-        read -p "Enter Hostname for this machine: " NEW_HOSTNAME
+        read -p "Enter intended hostname (for reference): " NEW_HOSTNAME
     fi
     
-    if [ -z "$NEW_HOSTNAME" ]; then
-        echo -e "${RED}Hostname cannot be empty!${NC}"
-        exit 1
-    fi
-
-    HOST_DIR="$FLAKE_PATH/hosts/$NEW_HOSTNAME"
-    mkdir -p "$HOST_DIR"
-    
-    # Generate and Move Hardware Config
-    nixos-generate-config --root "$MOUNT_POINT"
-    mv "$MOUNT_POINT/etc/nixos/hardware-configuration.nix" "$HOST_DIR/"
-    cp "$FLAKE_PATH/hosts/default.nix" "$HOST_DIR/default.nix"
-
-    # Update Hostname in default.nix
-    sed -i "s/networking.hostName = .*/networking.hostName = \"$NEW_HOSTNAME\";/" "$HOST_DIR/default.nix"
-
-    # --- FIX START: Create a dedicated install entry point ---
-    # This file handles the allowUnfree logic cleanly, avoiding complex sed injection errors.
-    cat > "$HOST_DIR/install.nix" <<EOF
-{ config, pkgs, ... }:
-{
-  imports = [ ./default.nix ];
-  
-  # Allow unfree packages (required for noisetorch/code/drivers)
-  nixpkgs.config.allowUnfree = true;
-  nix.settings.experimental-features = [ "nix-command" "flakes" ];
-}
-EOF
-    # --- FIX END ---
-
-    # 3. Automate Flake Update (Simplified)
-    echo -e "${GREEN}Automating Flake Update...${NC}"
-    
-    # Now we only inject the path to 'install.nix', which is much safer.
-    sed -i "/nixosConfigurations = {/a \\
-      $NEW_HOSTNAME = nixpkgs.lib.nixosSystem {\\
-        inherit system;\\
-        modules = [ ./hosts/$NEW_HOSTNAME/install.nix ];\\
-      };" "$FLAKE_PATH/flake.nix"
-
-    echo "Added '$NEW_HOSTNAME' to flake.nix successfully."
+    # We update the file, but we install as 'bootstrap' for now.
+    # You can rename it properly after the first boot!
+    sed -i "s/networking.hostName = .*/networking.hostName = \"$NEW_HOSTNAME\";/" "$BOOTSTRAP_DIR/default.nix"
 
     # 4. Permission Fix & Git Registration
     chown -R 1000:100 "$FLAKE_PATH"
     
-    echo "Registering new files with Git..."
+    echo "Registering files with Git..."
     cd "$FLAKE_PATH"
-    # We explicitly add the new folder to ensure everything is tracked
+    # Essential: Flakes ignore files not in git staging
     git add .
 
-    # 5. Install
+    # 5. Install using the Universal 'bootstrap' entry
     echo "Installing NixOS..."
-    nixos-install --flake "$FLAKE_PATH#$NEW_HOSTNAME"
+    nixos-install --flake "$FLAKE_PATH#bootstrap"
 
-    echo -e "${GREEN}System Installed! Reboot, log in as $TARGET_USER, and run this script again to finish.${NC}"
+    echo -e "${GREEN}System Installed!${NC}"
+    echo -e "${BLUE}NOTE: When you log in, your hostname will be 'bootstrap'.${NC}"
+    echo -e "You can rename the folder from 'hosts/bootstrap' to 'hosts/$NEW_HOSTNAME'"
+    echo -e "and update flake.nix manually later. This is the safest way."
     exit 0
 fi
 

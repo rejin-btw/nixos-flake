@@ -43,6 +43,25 @@
         };
       };
 
+
+
+       # 2. THE NEW BOOTSTRAP BLOCK (Add this!)
+        # This is the "Universal Slot" your install script will use.
+        bootstrap = nixpkgs.lib.nixosSystem {
+          inherit system;
+          modules = [
+            ./hosts/bootstrap/default.nix
+            {
+              # Essential settings to prevent "checkUnmatched" crashes during install
+              nix.settings.experimental-features = [ "nix-command" "flakes" ];
+              nixpkgs.config.allowUnfree = true;
+              networking.hostName = "bootstrap";
+            }
+          ];
+        };
+      };
+
+
       homeConfigurations = {
         rejin = home-manager.lib.homeManagerConfiguration {
           # 1. Define pkgs (Standard)
@@ -65,4 +84,7 @@
         };
       };
     };
-}
+  }
+
+
+   
