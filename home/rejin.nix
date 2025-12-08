@@ -143,28 +143,6 @@ in
       exec ${localDotfiles}/scripts/datetime_notify.sh "$@"
     '')
 
-    (writeShellScriptBin "nvim-thunar" ''
-      export PATH="${
-        lib.makeBinPath [
-          neovim
-          coreutils
-        ]
-      }:$PATH"
-      exec ${localDotfiles}/scripts/nvim_thunar.sh "$@"
-    '')
-
-    (writeShellScriptBin "ram-monitor" ''
-      export PATH="${
-        lib.makeBinPath [
-          libnotify
-          procps
-          gawk
-          coreutils
-        ]
-      }:$PATH"
-      exec ${localDotfiles}/scripts/ram_monitor.sh "$@"
-    '')
-
     (writeShellScriptBin "toggle-audio" ''
       export PATH="${
         lib.makeBinPath [
@@ -187,31 +165,6 @@ in
       exec ${localDotfiles}/scripts/vcp_full_control.sh "$@"
     '')
 
-    (writeShellScriptBin "start-niri" ''
-      export PATH="${
-        lib.makeBinPath [
-          niri
-          coreutils
-        ]
-      }:$PATH"
-      exec ${localDotfiles}/scripts/start-niri.sh "$@"
-    '')
-
-    (writeShellScriptBin "watch-firefox-bookmarks" ''
-      export PATH="${
-        lib.makeBinPath [
-          inotify-tools
-          python3
-        ]
-      }:$PATH"
-      exec ${localDotfiles}/scripts/bookmarks_watcher.sh "$@"
-    '')
-
-    (writeShellScriptBin "endless-sky" ''
-      export PATH="${lib.makeBinPath [ pkgs.endless-sky ]}:$PATH"
-      exec /home/rejin/dotfiles/scripts/endless-sky.sh "$@"
-    '')
-
     (writeShellScriptBin "clean-system" ''
       export PATH="${
         lib.makeBinPath [
@@ -222,17 +175,26 @@ in
       exec /home/rejin/dotfiles/scripts/clean-system.sh "$@"
     '')
 
+    (writeShellScriptBin "update-wall" ''
+      export PATH="${
+        lib.makeBinPath [
+          pkgs.imagemagick # Provides 'magick'
+          pkgs.swww # Provides 'swww'
+          pkgs.fontconfig # Provides 'fc-match'
+          pkgs.procps # Provides 'pkill'
+          pkgs.coreutils # Provides basic tools
+          pkgs.bash
+        ]
+      }:$PATH"
+      exec ${localDotfiles}/scripts/update-wall.sh "$@"
+    '')
+
     # --- PYTHON SCRIPTS ---
     # We create a wrapper that includes the python env, then runs your local file.
 
     (writeShellScriptBin "niri-mouse-scroll" ''
       export PATH="${lib.makeBinPath [ (pkgs.python3.withPackages (ps: [ ps.evdev ])) ]}:$PATH"
       exec python3 ${localDotfiles}/scripts/niri-mouse-scroll.py "$@"
-    '')
-
-    (writeShellScriptBin "fuzzel-bookmarks" ''
-      export PATH="${lib.makeBinPath [ (pkgs.python3.withPackages (ps: [ ps.evdev ])) ]}:$PATH"
-      exec python3 ${localDotfiles}/scripts/firefox-bookmarks-fuzzel.py "$@"
     '')
 
   ];
