@@ -111,6 +111,9 @@ in
     nixfmt-rfc-style
     imagemagick
     swww
+    obs-cmd
+    swaylock
+    swayidle
 
     # --- CUSTOM SCRIPTS (LIVE EDITING ENABLED) ---
     # These wrappers set up the dependencies ($PATH) but execute the file
@@ -298,13 +301,9 @@ in
   # --- THEME & INTEGRATION ---
   xdg.portal = {
     enable = true;
-    extraPortals = with pkgs; [
-      xdg-desktop-portal-gtk
-      xdg-desktop-portal-gnome
-    ];
-    config.common.default = "*";
+    extraPortals = [ pkgs.xdg-desktop-portal-gnome ];
+    config.common.default = [ "gnome" ];
   };
-
   gtk = {
     enable = true;
     theme = {
