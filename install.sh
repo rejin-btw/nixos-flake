@@ -34,11 +34,9 @@ if [ "$(id -u)" -eq 0 ]; then
 
     # 2. Hardware Logic
     echo "Generating Hardware Config..."
-    
-    # Check for argument: 'bash install.sh my-pc'
     if [ -n "$1" ]; then
         NEW_HOSTNAME="$1"
-        echo -e "${GREEN}Using hostname provided via argument: $NEW_HOSTNAME${NC}"
+        echo -e "${GREEN}Using hostname: $NEW_HOSTNAME${NC}"
     else
         read -p "Enter Hostname for this machine: " NEW_HOSTNAME
     fi
@@ -49,47 +47,51 @@ if [ "$(id -u)" -eq 0 ]; then
     fi
 
     HOST_DIR="$FLAKE_PATH/hosts/$NEW_HOSTNAME"
-    
-    if [ -d "$HOST_DIR" ]; then
-        echo -e "${RED}Host '$NEW_HOSTNAME' already exists in flake.${NC}"
-        echo "Exiting to prevent accidental overwrite."
-        exit 1
-    fi
-
     mkdir -p "$HOST_DIR"
     
+    # Generate and Move Hardware Config
     nixos-generate-config --root "$MOUNT_POINT"
     mv "$MOUNT_POINT/etc/nixos/hardware-configuration.nix" "$HOST_DIR/"
     cp "$FLAKE_PATH/hosts/default.nix" "$HOST_DIR/default.nix"
 
-    # 3. Update Hostname in the new host file
+    # Update Hostname in default.nix
     sed -i "s/networking.hostName = .*/networking.hostName = \"$NEW_HOSTNAME\";/" "$HOST_DIR/default.nix"
-     
-    # 4. AUTOMATION: Inject FULL CONFIG block into flake.nix
+
+    # --- FIX START: Create a dedicated install entry point ---
+    # This file handles the allowUnfree logic cleanly, avoiding complex sed injection errors.
+    cat > "$HOST_DIR/install.nix" <<EOF
+{ config, pkgs, ... }:
+{
+  imports = [ ./default.nix ];
+  
+  # Allow unfree packages (required for noisetorch/code/drivers)
+  nixpkgs.config.allowUnfree = true;
+  nix.settings.experimental-features = [ "nix-command" "flakes" ];
+}
+EOF
+    # --- FIX END ---
+
+    # 3. Automate Flake Update (Simplified)
     echo -e "${GREEN}Automating Flake Update...${NC}"
     
-    # Updated: REMOVED home-manager module to fix installation crash.
+    # Now we only inject the path to 'install.nix', which is much safer.
     sed -i "/nixosConfigurations = {/a \\
       $NEW_HOSTNAME = nixpkgs.lib.nixosSystem {\\
         inherit system;\\
-        modules = [\\
-          ./hosts/$NEW_HOSTNAME/default.nix\\
-          {\\
-            nix.settings.experimental-features = [ \"nix-command\" \"flakes\" ];\\
-            nixpkgs.config.allowUnfree = true;\\
-          }\\
-        ];\\
+        modules = [ ./hosts/$NEW_HOSTNAME/install.nix ];\\
       };" "$FLAKE_PATH/flake.nix"
-    
-    # 5. Permission Fix & Git Registration
+
+    echo "Added '$NEW_HOSTNAME' to flake.nix successfully."
+
+    # 4. Permission Fix & Git Registration
     chown -R 1000:100 "$FLAKE_PATH"
     
-    # CRITICAL FIX: Add new files to git so Flakes can see them
     echo "Registering new files with Git..."
     cd "$FLAKE_PATH"
+    # We explicitly add the new folder to ensure everything is tracked
     git add .
 
-    # 6. Install
+    # 5. Install
     echo "Installing NixOS..."
     nixos-install --flake "$FLAKE_PATH#$NEW_HOSTNAME"
 
@@ -102,21 +104,15 @@ if [ "$(id -u)" -ne 0 ]; then
     echo -e "${GREEN}Detected User Mode. Starting DOTFILES Install...${NC}"
     
     cd ~
-    
-    # 1. Clone Dotfiles
     if [ ! -d "dotfiles" ]; then
         echo "Cloning Dotfiles..."
         git clone $DOTFILES_REPO ~/dotfiles
-    else
-        echo "Dotfiles repo already exists."
     fi
 
-    # 2. Dynamic Home Manager Install
     echo "Applying Home Manager..."
-    # Uses the system's matching home-manager version automatically
+    # Dynamic version fetch
     nix run nixpkgs#home-manager -- switch --flake ~/nixos-flake#$TARGET_USER
 
     echo -e "${GREEN}Setup Complete! Welcome home.${NC}"
     exit 0
 fi
-
