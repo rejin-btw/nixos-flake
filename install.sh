@@ -64,27 +64,23 @@ if [ "$(id -u)" -eq 0 ]; then
 
     # 3. Update Hostname in the new host file
     sed -i "s/networking.hostName = .*/networking.hostName = \"$NEW_HOSTNAME\";/" "$HOST_DIR/default.nix"
-
+     
     # 4. AUTOMATION: Inject FULL CONFIG block into flake.nix
     echo -e "${GREEN}Automating Flake Update...${NC}"
     
-    # We inject the full block with allowUnfree and experimental-features enabled
-    # to prevent evaluation errors during install.
+    # Updated: REMOVED home-manager module to fix installation crash.
     sed -i "/nixosConfigurations = {/a \\
       $NEW_HOSTNAME = nixpkgs.lib.nixosSystem {\\
         inherit system;\\
         modules = [\\
           ./hosts/$NEW_HOSTNAME/default.nix\\
-          home-manager.nixosModules.home-manager\\
           {\\
             nix.settings.experimental-features = [ \"nix-command\" \"flakes\" ];\\
             nixpkgs.config.allowUnfree = true;\\
           }\\
         ];\\
       };" "$FLAKE_PATH/flake.nix"
-
-    echo "Added '$NEW_HOSTNAME' to flake.nix successfully."
-
+    
     # 5. Permission Fix & Git Registration
     chown -R 1000:100 "$FLAKE_PATH"
     
