@@ -7,49 +7,62 @@
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
   };
 
-  outputs = { self, nixpkgs, home-manager, nixpkgs-unstable, ... }:
-  let
-    system = "x86_64-linux";
+  outputs =
+    {
+      self,
+      nixpkgs,
+      home-manager,
+      nixpkgs-unstable,
+      ...
+    }:
+    let
+      system = "x86_64-linux";
 
-    # Define the Unstable Packages
-    pkgs-unstable = import nixpkgs-unstable {
-      inherit system;
-      config.allowUnfree = true;
-    };
-
-  in {
-    nixosConfigurations = {
-      rejin-nixos = nixpkgs.lib.nixosSystem {
+      # Define the Unstable Packages
+      pkgs-unstable = import nixpkgs-unstable {
         inherit system;
-        modules = [
-          ./hosts/default.nix
-          home-manager.nixosModules.home-manager
-          {
-            nix.settings.experimental-features = [ "nix-command" "flakes" ];
-            nixpkgs.config.allowUnfree = true;
-          }
-        ];
+        config.allowUnfree = true;
       };
-    };
 
-    homeConfigurations = {
-      rejin = home-manager.lib.homeManagerConfiguration {
-        # 1. Define pkgs (Standard)
-        pkgs = import nixpkgs {
+    in
+    {
+      nixosConfigurations = {
+        rejin-nixos = nixpkgs.lib.nixosSystem {
           inherit system;
-          config = { allowUnfree = true; };
-        }; # <--- NOTICE THIS CLOSING BRACE AND SEMICOLON. IMPORTANT!
-
-        # 2. Pass Unstable to your config (Sibling to pkgs)
-        extraSpecialArgs = {
-          inherit pkgs-unstable;
+          modules = [
+            ./hosts/default.nix
+            home-manager.nixosModules.home-manager
+            {
+              nix.settings.experimental-features = [
+                "nix-command"
+                "flakes"
+              ];
+              nixpkgs.config.allowUnfree = true;
+            }
+          ];
         };
+      };
 
-        # 3. Load your module (Sibling to pkgs)
-        modules = [
-          ./home/rejin.nix  # Make sure this filename matches what is on your disk!
-        ];
+      homeConfigurations = {
+        rejin = home-manager.lib.homeManagerConfiguration {
+          # 1. Define pkgs (Standard)
+          pkgs = import nixpkgs {
+            inherit system;
+            config = {
+              allowUnfree = true;
+            };
+          }; # <--- NOTICE THIS CLOSING BRACE AND SEMICOLON. IMPORTANT!
+
+          # 2. Pass Unstable to your config (Sibling to pkgs)
+          extraSpecialArgs = {
+            inherit pkgs-unstable;
+          };
+
+          # 3. Load your module (Sibling to pkgs)
+          modules = [
+            ./home/rejin.nix # Make sure this filename matches what is on your disk!
+          ];
+        };
       };
     };
-  };
 }
