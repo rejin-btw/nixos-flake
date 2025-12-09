@@ -1,6 +1,6 @@
-description = "NixOS + Home Manager + flake for rejin";
+{
 
-
+  description = "NixOS + Home Manager + flake for rejin";
 
   inputs = {
 
@@ -11,8 +11,6 @@ description = "NixOS + Home Manager + flake for rejin";
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
 
   };
-
-
 
   outputs =
 
@@ -34,8 +32,6 @@ description = "NixOS + Home Manager + flake for rejin";
 
       system = "x86_64-linux";
 
-
-
       # Define the Unstable Packages
 
       pkgs-unstable = import nixpkgs-unstable {
@@ -45,8 +41,6 @@ description = "NixOS + Home Manager + flake for rejin";
         config.allowUnfree = true;
 
       };
-
-
 
     in
 
@@ -84,8 +78,6 @@ description = "NixOS + Home Manager + flake for rejin";
 
       };
 
-
-
       homeConfigurations = {
 
         rejin = home-manager.lib.homeManagerConfiguration {
@@ -104,8 +96,6 @@ description = "NixOS + Home Manager + flake for rejin";
 
           }; # <--- NOTICE THIS CLOSING BRACE AND SEMICOLON. IMPORTANT!
 
-
-
           # 2. Pass Unstable to your config (Sibling to pkgs)
 
           extraSpecialArgs = {
@@ -113,8 +103,6 @@ description = "NixOS + Home Manager + flake for rejin";
             inherit pkgs-unstable;
 
           };
-
-
 
           # 3. Load your module (Sibling to pkgs)
 
@@ -131,5 +119,3 @@ description = "NixOS + Home Manager + flake for rejin";
     };
 
 }
-
-)
