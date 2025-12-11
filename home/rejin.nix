@@ -114,6 +114,7 @@ in
     obs-cmd
     swaylock
     swayidle
+    ungoogled-chromium
 
     # --- CUSTOM SCRIPTS (LIVE EDITING ENABLED) ---
     # These wrappers set up the dependencies ($PATH) but execute the file
