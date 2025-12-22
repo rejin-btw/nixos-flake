@@ -58,6 +58,8 @@
   services.udisks2.enable = true;
   services.flatpak.enable = true;
   services.displayManager.ly.enable = true;
+  services.gvfs.enable = true;
+  services.udev.packages = [ pkgs.android-file-transfer ];
 
   # 8. USERS
   users.users.rejin = {

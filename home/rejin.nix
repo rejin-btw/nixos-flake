@@ -119,6 +119,10 @@ in
     obsidian
     foliate
     jq
+    libmtp
+    mtpfs
+    usbutils
+    gnome.gvfs
 
     # --- CUSTOM SCRIPTS (LIVE EDITING ENABLED) ---
     # These wrappers set up the dependencies ($PATH) but execute the file
