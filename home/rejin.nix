@@ -115,6 +115,10 @@ in
     swaylock
     swayidle
     ungoogled-chromium
+    libnotify
+    obsidian
+    foliate
+    jq
 
     # --- CUSTOM SCRIPTS (LIVE EDITING ENABLED) ---
     # These wrappers set up the dependencies ($PATH) but execute the file
@@ -280,6 +284,12 @@ in
   qt = {
     enable = true;
     style.name = "adwaita-dark";
+  };
+
+  dconf.settings = {
+    "org/gnome/desktop/interface" = {
+      color-scheme = "prefer-dark";
+    };
   };
 
   home.sessionVariables = {
