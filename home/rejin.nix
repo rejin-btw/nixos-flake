@@ -123,6 +123,10 @@ in
     mtpfs
     usbutils
     gnome.gvfs
+    ntfs3g
+    exfatprogs
+    quickemu
+    virt-viewer
 
     # --- CUSTOM SCRIPTS (LIVE EDITING ENABLED) ---
     # These wrappers set up the dependencies ($PATH) but execute the file
@@ -239,6 +243,46 @@ in
       };
       credential.helper = "libsecret";
       core.editor = "vim";
+    };
+  };
+
+  # OBSIDIAN BACKUP ON GIT
+  # 1. The Service (The Action)
+  systemd.user.services.obsidian-backup = {
+    Unit = {
+      Description = "Auto-backup Obsidian notes to GitHub";
+    };
+    Service = {
+      Type = "oneshot";
+      WorkingDirectory = "/home/rejin/ov-1";
+      # We use /bin/sh to ensure we inherit the user's PATH (needed for libsecret)
+      ExecStart = pkgs.writeShellScript "backup-obsidian" ''
+        export PATH=$PATH:${pkgs.git}/bin
+
+        # Add changes
+        git add .
+
+        # Commit & Push only if changes exist
+        if ! git diff-index --quiet HEAD; then
+           git commit -m "Auto-backup: $(date +'%Y-%m-%d %H:%M')"
+           git push origin main
+        fi
+      '';
+    };
+  };
+
+  # 2. The Timer (The Schedule)
+  systemd.user.timers.obsidian-backup = {
+    Unit = {
+      Description = "Trigger Obsidian backup every hour";
+    };
+    Timer = {
+      OnBootSec = "15m"; # Run 15 min after boot
+      OnUnitActiveSec = "1h"; # Run every 1 hour after that
+      Persistent = true; # Catch up if computer was off
+    };
+    Install = {
+      WantedBy = [ "timers.target" ];
     };
   };
 

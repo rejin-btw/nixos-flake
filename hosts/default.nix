@@ -60,6 +60,12 @@
   services.displayManager.ly.enable = true;
   services.gvfs.enable = true;
   services.udev.packages = [ pkgs.android-file-transfer ];
+  services.syncthing = {
+    enable = true;
+    user = "rejin";
+    dataDir = "/home/rejin/Documents"; # Default folder for new shares
+    configDir = "/home/rejin/.config/syncthing";
+  };
 
   # 8. USERS
   users.users.rejin = {
@@ -126,4 +132,8 @@
       cp ${../hardware/firmware/hda-jack-retask.fw} $out/lib/firmware/hda-jack-retask.fw
     '')
   ];
+
+  #15 adding zram
+  zramSwap.enable = true;
+  zramSwap.memoryPercent = 50;
 }
