@@ -114,6 +114,7 @@
   services.gnome.gnome-keyring.enable = true;
   security.pam.services.login.enableGnomeKeyring = true;
   security.polkit.enable = true;
+  virtualisation.waydroid.enable = true;
 
   # 13. FOR AUDIO-ENABLING PIPEWIRE
   security.rtkit.enable = true;
@@ -136,4 +137,7 @@
   #15 adding zram
   zramSwap.enable = true;
   zramSwap.memoryPercent = 50;
+
+  #16 below is the thing for having the same download folder for waydroid and linux
+
 }

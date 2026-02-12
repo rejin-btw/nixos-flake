@@ -343,4 +343,5 @@ in
   home.sessionVariables = {
     EDITOR = "vim";
   };
+
 }
