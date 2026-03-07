@@ -19,7 +19,6 @@
     useOSProber = true;
   };
   boot.loader.efi.canTouchEfiVariables = true;
-
   # 3. HARDWARE
   hardware.i2c.enable = true;
   boot.kernelModules = [
@@ -34,6 +33,7 @@
 
   # 5. NETWORKING & TIME
   networking.networkmanager.enable = true;
+  networking.wireless.enable = false;
   time.timeZone = "Asia/Kolkata";
 
   # 6. SYSTEM PACKAGES
@@ -50,6 +50,8 @@
   programs.niri.enable = true;
   programs.fish.enable = true;
   programs.noisetorch.enable = true;
+  hardware.bluetooth.enable = true;
+  services.blueman.enable = true;
 
   services.udisks2.enable = true;
   services.flatpak.enable = true;
@@ -124,7 +126,5 @@
   #15 adding zram
   zramSwap.enable = true;
   zramSwap.memoryPercent = 50;
-
-  
 
 }
