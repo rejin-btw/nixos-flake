@@ -127,6 +127,8 @@ in
     exfatprogs
     quickemu
     virt-viewer
+    pipe-viewer
+    monophony
 
     # --- CUSTOM SCRIPTS (LIVE EDITING ENABLED) ---
     # These wrappers set up the dependencies ($PATH) but execute the file
