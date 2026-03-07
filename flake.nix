@@ -54,7 +54,7 @@
 
           modules = [
 
-            ./hosts/default.nix
+            ./hosts/desktop/default.nix
 
             home-manager.nixosModules.home-manager
 
@@ -75,8 +75,39 @@
           ];
 
         };
+        
+       thinkpad = nixpkgs.lib.nixosSystem {
+ 	
+	inherit system;
+
+	modules = [
+
+	  ./hosts/thinkpad/default.nix
+
+	  home-manager.nixosModules.home-manager
+
+	  {
+
+	   nix.settings.experimental-features = [
+
+	    "nix-command"
+	   
+	    "flakes"
+
+	   ];
+	   
+	   nixpkgs.config.allowUnfree = true;
+
+	 }
+
+        ];
 
       };
+     
+     };
+
+      
+       
 
       homeConfigurations = {
 
