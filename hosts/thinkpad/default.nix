@@ -35,6 +35,7 @@
   networking.networkmanager.enable = true;
   networking.wireless.enable = false;
   time.timeZone = "Asia/Kolkata";
+  networking.hostName = "thinkpad";
 
   # 6. SYSTEM PACKAGES
   environment.systemPackages = with pkgs; [
@@ -44,6 +45,9 @@
     alsa-tools
     polkit_gnome
     home-manager
+    brightnessctl
+    batsignal
+    libnotify
   ];
 
   # 7. PROGRAMS
@@ -52,6 +56,18 @@
   programs.noisetorch.enable = true;
   hardware.bluetooth.enable = true;
   services.blueman.enable = true;
+
+  services.tlp = {
+    enable = true;
+    settings = {
+      START_CHARGE_THRESH_BAT0 = 75;
+      STOP_CHARGE_THRESH_BAT0 = 80;
+
+      # TLP's defaults are excellent, but you can explicitly replicate your old auto-cpufreq rules here:
+      CPU_SCALING_GOVERNOR_ON_AC = "performance";
+      CPU_SCALING_GOVERNOR_ON_BAT = "powersave";
+    };
+  };
 
   services.udisks2.enable = true;
   services.flatpak.enable = true;
@@ -126,5 +142,17 @@
   #15 adding zram
   zramSwap.enable = true;
   zramSwap.memoryPercent = 50;
+
+  #16 for notfications for 15 10 and 05
+  systemd.user.services.batsignal = {
+    description = "Battery monitor daemon";
+    wantedBy = [ "graphical-session.target" ];
+    partOf = [ "graphical-session.target" ];
+    serviceConfig = {
+      # Systemd can be picky with the % symbol, so writing out "percent" is safest
+      ExecStart = "${pkgs.batsignal}/bin/batsignal -w 15 -c 10 -d 5 -D \"${pkgs.libnotify}/bin/notify-send 'Battery Danger' 'Battery is at 5 percent! Plug in now.' -u critical\"";
+      Restart = "on-failure";
+    };
+  };
 
 }

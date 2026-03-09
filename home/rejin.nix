@@ -253,6 +253,7 @@ in
   systemd.user.services.obsidian-backup = {
     Unit = {
       Description = "Auto-backup Obsidian notes to GitHub";
+      ConditionHost = "thinkpad";
     };
     Service = {
       Type = "oneshot";
