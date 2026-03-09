@@ -253,14 +253,14 @@ in
   systemd.user.services.obsidian-backup = {
     Unit = {
       Description = "Auto-backup Obsidian notes to GitHub";
-      ConditionHost = "thinkpad";
+      ConditionHost = "thinkpad"; # Ensures this only runs on the ThinkPad
     };
     Service = {
       Type = "oneshot";
       WorkingDirectory = "/home/rejin/ov-1";
-      # We use /bin/sh to ensure we inherit the user's PATH (needed for libsecret)
+      # Ensure git and ssh are available in the background PATH
       ExecStart = pkgs.writeShellScript "backup-obsidian" ''
-        export PATH=$PATH:${pkgs.git}/bin
+        export PATH=$PATH:${pkgs.git}/bin:${pkgs.openssh}/bin
 
         # Add changes
         git add .
@@ -278,6 +278,7 @@ in
   systemd.user.timers.obsidian-backup = {
     Unit = {
       Description = "Trigger Obsidian backup every hour";
+      ConditionHost = "thinkpad"; # Added here so the PC doesn't run the timer at all
     };
     Timer = {
       OnBootSec = "15m"; # Run 15 min after boot
