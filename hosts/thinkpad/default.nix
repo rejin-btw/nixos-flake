@@ -155,4 +155,25 @@
     };
   };
 
+  # 16
+  # Adjust TrackPoint sensitivity
+  services.libinput = {
+    enable = true;
+    mouse = {
+      accelProfile = "flat"; # Or "adaptive" for a more natural feel
+      accelSpeed = "0.5"; # Range is -1.0 to 1.0. Increase for higher sensitivity.
+    };
+  };
+
+  #17
+  hardware.graphics = {
+    enable = true;
+    extraPackages = with pkgs; [
+      intel-media-driver
+      intel-vaapi-driver # Replaces vaapiIntel
+      libva-vdpau-driver # Replaces vaapiVdpau
+      libvdpau-va-gl
+    ];
+  };
+
 }
