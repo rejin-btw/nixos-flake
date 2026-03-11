@@ -150,7 +150,7 @@
     partOf = [ "graphical-session.target" ];
     serviceConfig = {
       # Systemd can be picky with the % symbol, so writing out "percent" is safest
-      ExecStart = "${pkgs.batsignal}/bin/batsignal -w 15 -c 10 -d 5 -D \"${pkgs.libnotify}/bin/notify-send 'Battery Danger' 'Battery is at 5 percent! Plug in now.' -u critical\"";
+      ExecStart = "${pkgs.batsignal}/bin/batsignal -w 15 -c 10 -d 5 -f 79 -D \"${pkgs.libnotify}/bin/notify-send 'Battery Danger' 'Battery is at 5 percent! Plug in now.' -u critical\"";
       Restart = "on-failure";
     };
   };
