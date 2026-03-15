@@ -176,4 +176,12 @@
     ];
   };
 
+  #18 turning off muted state of audio and microphone on boot
+  systemd.tmpfiles.rules = [
+    # Turns off the F1 (Speaker Mute) LED
+    "w /sys/class/leds/platform::mute/brightness - - - - 0"
+    # Turns off the F4 (Mic Mute) LED
+    "w /sys/class/leds/platform::micmute/brightness - - - - 0"
+  ];
+
 }

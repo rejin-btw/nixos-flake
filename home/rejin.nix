@@ -50,7 +50,6 @@ in
     wl-clipboard
     cliphist
     wl-clip-persist
-    telegram-desktop
     phinger-cursors
     tree
     stow
@@ -129,6 +128,9 @@ in
     virt-viewer
     pipe-viewer
     monophony
+    wtype
+    paper-plane
+    telegram-desktop
 
     # --- CUSTOM SCRIPTS (LIVE EDITING ENABLED) ---
     # These wrappers set up the dependencies ($PATH) but execute the file
