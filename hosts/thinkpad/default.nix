@@ -48,6 +48,16 @@
     brightnessctl
     batsignal
     libnotify
+
+    (writeShellScriptBin "toggle-syncthing" ''
+      if systemctl is-active --quiet syncthing.service; then
+        sudo systemctl stop syncthing.service
+        ${libnotify}/bin/notify-send "Syncthing" "Stopped - Saving Battery 🔋"
+      else
+        sudo systemctl start syncthing.service
+        ${libnotify}/bin/notify-send "Syncthing" "Started Syncing 🔄"
+      fi
+    '')
   ];
 
   # 7. PROGRAMS
@@ -56,30 +66,76 @@
   programs.noisetorch.enable = true;
   hardware.bluetooth.enable = true;
   services.blueman.enable = true;
+  services.fstrim.enable = true;
 
   services.tlp = {
     enable = true;
     settings = {
+      # Your existing settings:
       START_CHARGE_THRESH_BAT0 = 75;
       STOP_CHARGE_THRESH_BAT0 = 80;
-
-      # TLP's defaults are excellent, but you can explicitly replicate your old auto-cpufreq rules here:
       CPU_SCALING_GOVERNOR_ON_AC = "performance";
       CPU_SCALING_GOVERNOR_ON_BAT = "powersave";
+
+      # --- NEW AGGRESSIVE BATTERY TWEAKS ---
+
+      # 1. CPU Energy Policy (Intel P-State)
+      # Tells the Intel chip to prioritize energy efficiency over responsiveness
+      CPU_ENERGY_PERF_POLICY_ON_BAT = "power";
+
+      # 2. Disable CPU Turbo Boost on Battery
+      # This is HUGE. It prevents the CPU from spiking to 3.4GHz just to open a webpage.
+      CPU_BOOST_ON_BAT = 0;
+
+      # 3. Wi-Fi Power Saving
+      # Forces the Intel Wi-Fi card into a low-power sleep state when not actively downloading
+      WIFI_PWR_ON_BAT = "on";
+
+      # 4. PCIe ASPM (Active State Power Management)
+      # Puts internal PCIe connections (NVMe drive, Wi-Fi card) into deep sleep when idle
+      PCIE_ASPM_ON_BAT = "powersupersave";
+
+      # 5. Audio Power Saving
+      # Turns off the audio chip after 1 second of silence (instead of keeping it awake)
+      SOUND_POWER_SAVE_ON_BAT = 1;
     };
   };
 
   services.udisks2.enable = true;
+  #services.speechd.enable = true;
   services.flatpak.enable = true;
   services.displayManager.ly.enable = true;
   services.gvfs.enable = true;
-  services.udev.packages = [ pkgs.android-file-transfer ];
+  services.udev.packages = [
+    pkgs.android-file-transfer
+  ];
+  # 1. Your Syncthing Setup
   services.syncthing = {
     enable = true;
     user = "rejin";
-    dataDir = "/home/rejin/Documents"; # Default folder for new shares
+    dataDir = "/home/rejin/Documents";
     configDir = "/home/rejin/.config/syncthing";
   };
+
+  # 2. Stop Syncthing from starting automatically at boot
+  systemd.services.syncthing.wantedBy = lib.mkForce [ ];
+
+  # 3. Allow your Niri keybind to start/stop it without a sudo password
+  security.sudo.extraRules = [
+    {
+      users = [ "rejin" ];
+      commands = [
+        {
+          command = "/run/current-system/sw/bin/systemctl start syncthing.service";
+          options = [ "NOPASSWD" ];
+        }
+        {
+          command = "/run/current-system/sw/bin/systemctl stop syncthing.service";
+          options = [ "NOPASSWD" ];
+        }
+      ];
+    }
+  ];
 
   # 8. USERS
   users.users.rejin = {

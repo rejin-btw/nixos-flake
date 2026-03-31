@@ -30,7 +30,6 @@ let
     "fastfetch"
     "foot"
     "pistol"
-
   ];
 
 in
@@ -99,7 +98,7 @@ in
     fastfetch
     btop
     anki-bin
-    imv # unage viewer
+    imv
     ffmpegthumbnailer
     foot
     libsixel
@@ -129,13 +128,15 @@ in
     pipe-viewer
     monophony
     wtype
-    paper-plane
     telegram-desktop
-
+    super-productivity
+    materialgram
+    vlc
+    pueue
+    yt-dlp
+    gammastep
+    bibata-cursors
     # --- CUSTOM SCRIPTS (LIVE EDITING ENABLED) ---
-    # These wrappers set up the dependencies ($PATH) but execute the file
-    # directly from your disk. Edit the file -> Run script -> Instant update.
-
     (writeShellScriptBin "auto-consume" ''
       export PATH="${
         lib.makeBinPath [
@@ -195,25 +196,21 @@ in
     (writeShellScriptBin "update-wall" ''
       export PATH="${
         lib.makeBinPath [
-          pkgs.imagemagick # Provides 'magick'
-          pkgs.swww # Provides 'swww'
-          pkgs.fontconfig # Provides 'fc-match'
-          pkgs.procps # Provides 'pkill'
-          pkgs.coreutils # Provides basic tools
+          pkgs.imagemagick
+          pkgs.swww
+          pkgs.fontconfig
+          pkgs.procps
+          pkgs.coreutils
           pkgs.bash
         ]
       }:$PATH"
       exec ${localDotfiles}/scripts/update-wall.sh "$@"
     '')
 
-    # --- PYTHON SCRIPTS ---
-    # We create a wrapper that includes the python env, then runs your local file.
-
     (writeShellScriptBin "niri-mouse-scroll" ''
       export PATH="${lib.makeBinPath [ (pkgs.python3.withPackages (ps: [ ps.evdev ])) ]}:$PATH"
       exec python3 ${localDotfiles}/scripts/niri-mouse-scroll.py "$@"
     '')
-
   ];
 
   # Auto-start the Polkit Authentication Agent
@@ -225,7 +222,6 @@ in
     };
     Service = {
       Type = "simple";
-      # Nix will automatically find the correct path here every time you update
       ExecStart = "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1";
       Restart = "on-failure";
       RestartSec = 1;
@@ -251,23 +247,17 @@ in
   };
 
   # OBSIDIAN BACKUP ON GIT
-  # 1. The Service (The Action)
   systemd.user.services.obsidian-backup = {
     Unit = {
       Description = "Auto-backup Obsidian notes to GitHub";
-      ConditionHost = "thinkpad"; # Ensures this only runs on the ThinkPad
+      ConditionHost = "thinkpad";
     };
     Service = {
       Type = "oneshot";
       WorkingDirectory = "/home/rejin/ov-1";
-      # Ensure git and ssh are available in the background PATH
       ExecStart = pkgs.writeShellScript "backup-obsidian" ''
         export PATH=$PATH:${pkgs.git}/bin:${pkgs.openssh}/bin
-
-        # Add changes
         git add .
-
-        # Commit & Push only if changes exist
         if ! git diff-index --quiet HEAD; then
            git commit -m "Auto-backup: $(date +'%Y-%m-%d %H:%M')"
            git push origin main
@@ -276,16 +266,15 @@ in
     };
   };
 
-  # 2. The Timer (The Schedule)
   systemd.user.timers.obsidian-backup = {
     Unit = {
       Description = "Trigger Obsidian backup every hour";
-      ConditionHost = "thinkpad"; # Added here so the PC doesn't run the timer at all
+      ConditionHost = "thinkpad";
     };
     Timer = {
-      OnBootSec = "15m"; # Run 15 min after boot
-      OnUnitActiveSec = "1h"; # Run every 1 hour after that
-      Persistent = true; # Catch up if computer was off
+      OnBootSec = "15m";
+      OnUnitActiveSec = "1h";
+      Persistent = true;
     };
     Install = {
       WantedBy = [ "timers.target" ];
@@ -294,7 +283,6 @@ in
 
   programs.fish = {
     enable = true;
-
   };
 
   programs.firefox.enable = true;
@@ -303,15 +291,13 @@ in
 
   # 1. Handle .config files
   xdg.configFile =
-    # Loop over the simple folders (recursive = false by default)
     (lib.genAttrs simpleConfigs (name: {
       source = mkLink name;
     }))
-    //
-    # Add special cases (Niri points to a subfolder)
-    {
+    // {
       "niri".source = mkLink "niri/nix";
       "fish/conf.d/rejin.fish".source = mkLink "fish/conf.d/rejin.fish";
+
     };
 
   # 2. Handle files in Home Root (Scripts folder)
@@ -346,8 +332,19 @@ in
     };
   };
 
+  xdg.desktopEntries.super-productivity = {
+    name = "Super Productivity";
+    exec = "super-productivity --enable-features=UseOzonePlatform --ozone-platform=wayland %U";
+    terminal = false;
+    categories = [ "Utility" ];
+    icon = "super-productivity";
+  };
+
+  services.pueue.enable = true;
+
   home.sessionVariables = {
     EDITOR = "vim";
+
   };
 
 }
