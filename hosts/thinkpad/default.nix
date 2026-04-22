@@ -48,7 +48,7 @@
     brightnessctl
     batsignal
     libnotify
-
+    scrcpy
     (writeShellScriptBin "toggle-syncthing" ''
       if systemctl is-active --quiet syncthing.service; then
         sudo systemctl stop syncthing.service
@@ -67,6 +67,7 @@
   hardware.bluetooth.enable = true;
   services.blueman.enable = true;
   services.fstrim.enable = true;
+  programs.adb.enable = true;
 
   services.tlp = {
     enable = true;
@@ -146,6 +147,7 @@
       "i2c"
       "input"
       "video"
+      "adbusers"
     ];
     shell = pkgs.fish;
     packages = with pkgs; [ ];

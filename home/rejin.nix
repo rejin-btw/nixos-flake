@@ -45,7 +45,7 @@ in
     wget
     fuzzel
     mako
-    neovim
+
     wl-clipboard
     cliphist
     wl-clip-persist
@@ -136,6 +136,7 @@ in
     yt-dlp
     gammastep
     bibata-cursors
+
     # --- CUSTOM SCRIPTS (LIVE EDITING ENABLED) ---
     (writeShellScriptBin "auto-consume" ''
       export PATH="${
@@ -286,6 +287,13 @@ in
   };
 
   programs.firefox.enable = true;
+  programs.neovim = {
+    enable = true;
+    plugins = with pkgs.vimPlugins; [
+      autolist-nvim
+      # ... other plugins
+    ];
+  };
 
   # --- CONFIG MANAGEMENT (THE FIX) ---
 
