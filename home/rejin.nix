@@ -136,6 +136,8 @@ in
     yt-dlp
     gammastep
     bibata-cursors
+    fuchsia-cursor
+    google-cursor
 
     # --- CUSTOM SCRIPTS (LIVE EDITING ENABLED) ---
     (writeShellScriptBin "auto-consume" ''
