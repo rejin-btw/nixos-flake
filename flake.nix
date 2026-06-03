@@ -4,9 +4,9 @@
 
   inputs = {
 
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.11";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-26.05";
 
-    home-manager.url = "github:nix-community/home-manager/release-25.11";
+    home-manager.url = "github:nix-community/home-manager/release-26.05";
 
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
 
@@ -75,39 +75,36 @@
           ];
 
         };
-        
-       thinkpad = nixpkgs.lib.nixosSystem {
- 	
-	inherit system;
 
-	modules = [
+        thinkpad = nixpkgs.lib.nixosSystem {
 
-	  ./hosts/thinkpad/default.nix
+          inherit system;
 
-	  home-manager.nixosModules.home-manager
+          modules = [
 
-	  {
+            ./hosts/thinkpad/default.nix
 
-	   nix.settings.experimental-features = [
+            home-manager.nixosModules.home-manager
 
-	    "nix-command"
-	   
-	    "flakes"
+            {
 
-	   ];
-	   
-	   nixpkgs.config.allowUnfree = true;
+              nix.settings.experimental-features = [
 
-	 }
+                "nix-command"
 
-        ];
+                "flakes"
+
+              ];
+
+              nixpkgs.config.allowUnfree = true;
+
+            }
+
+          ];
+
+        };
 
       };
-     
-     };
-
-      
-       
 
       homeConfigurations = {
 

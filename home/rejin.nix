@@ -25,11 +25,10 @@ let
     "zathura"
     "lf"
     "alacritty"
-    "nvim"
-    "starship.toml"
     "fastfetch"
     "foot"
     "pistol"
+    "starship.toml"
   ];
 
 in
@@ -67,10 +66,10 @@ in
     zathura
     gnome-themes-extra
     adwaita-qt
-    xfce.thunar
-    xfce.thunar-volman
-    xfce.thunar-media-tags-plugin
-    xfce.thunar-archive-plugin
+    thunar
+    thunar-volman
+    thunar-media-tags-plugin
+    thunar-archive-plugin
     lf
     fd
     fzf
@@ -90,7 +89,7 @@ in
     osu-lazer-bin
     chromium-bsu
     sgt-puzzles
-    superTuxKart
+    supertuxkart
     swaybg
     obs-studio
     alsa-utils
@@ -106,9 +105,9 @@ in
     chafa
     statix
     nil
-    nixfmt-rfc-style
+    nixfmt
     imagemagick
-    swww
+    awww
     obs-cmd
     swaylock
     swayidle
@@ -138,6 +137,7 @@ in
     bibata-cursors
     fuchsia-cursor
     google-cursor
+    nautilus
 
     # --- CUSTOM SCRIPTS (LIVE EDITING ENABLED) ---
     (writeShellScriptBin "auto-consume" ''
@@ -288,7 +288,10 @@ in
     enable = true;
   };
 
-  programs.firefox.enable = true;
+  programs.firefox = {
+    enable = true;
+    configPath = "${config.xdg.configHome}/mozilla/firefox";
+  };
   programs.neovim = {
     enable = true;
     plugins = with pkgs.vimPlugins; [
@@ -307,6 +310,7 @@ in
     // {
       "niri".source = mkLink "niri/nix";
       "fish/conf.d/rejin.fish".source = mkLink "fish/conf.d/rejin.fish";
+      "nvim/init.lua".source = mkLink "nvim/init.lua";
 
     };
 

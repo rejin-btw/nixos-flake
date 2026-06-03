@@ -33,7 +33,7 @@
 
   # 5. NETWORKING & TIME
   networking.networkmanager.enable = true;
-  networking.wireless.enable = false;
+  networking.wireless.enable = true;
   time.timeZone = "Asia/Kolkata";
   networking.hostName = "thinkpad";
 
@@ -49,6 +49,7 @@
     batsignal
     libnotify
     scrcpy
+    android-tools
     (writeShellScriptBin "toggle-syncthing" ''
       if systemctl is-active --quiet syncthing.service; then
         sudo systemctl stop syncthing.service
@@ -67,7 +68,6 @@
   hardware.bluetooth.enable = true;
   services.blueman.enable = true;
   services.fstrim.enable = true;
-  programs.adb.enable = true;
 
   services.tlp = {
     enable = true;
